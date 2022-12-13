@@ -4,5 +4,6 @@
     <style name="Theme.CityCatch" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor">@color/orange</item>
         <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="s">@drawable/logo_animation</item>
+        <item name="android:windowSplashScreenAnimationDuration" tools:targetApi="s">2500</item>
     </style>
 </resources>
