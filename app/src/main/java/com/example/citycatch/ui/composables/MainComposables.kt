@@ -1,15 +1,14 @@
 package com.example.citycatch.ui.composables
 
+import android.content.Intent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -17,6 +16,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.citycatch.CameraActivity
+import com.example.citycatch.MapsActivity
 import com.example.citycatch.data.FirebaseRepository
 import com.example.citycatch.ui.theme.Orange
 import com.example.citycatch.utils.BottomNavItem
@@ -104,17 +105,25 @@ fun Left(){
 }
 @Composable
 fun Right(){
+    val context = LocalContext.current
     Box(modifier = Modifier
         .fillMaxSize()
         .background(Color.Blue)){
         //for testing
-        Button(
-            onClick = {
-                FirebaseRepository.userSignOut()
+        Column() {
+            Button(
+                onClick = {
+                    FirebaseRepository.userSignOut()
+                }) {
+                Text(text = "LogOut")
+            }
+            Button(onClick = {
+                val intent = Intent(context, CameraActivity::class.java)
+                context.startActivity(intent)
             }) {
-            Text(text = "LogOut")
+                Text(text = "Go to Camera")
+            }
         }
-
     }
 }
 @Composable

@@ -2,9 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-feature android:name="android.hardware.camera.any"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -19,7 +21,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCp7WboGFj2xBSnKEbvXzm6Lhr5vYYhqPU" />
+            android:value="${MAPS_API_KEY}" />
 
         <activity
             android:name=".EntryPointActivity"
@@ -27,7 +29,6 @@
             android:theme="@style/Theme.CityCatch">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
@@ -40,6 +41,12 @@
             android:name=".MapsActivity"
             android:theme="@style/Theme.CityCatch">
         </activity>
+
+        <activity
+            android:name=".CameraActivity"
+            android:theme="@style/Theme.CityCatch">
+        </activity>
+
     </application>
 
 </manifest>
