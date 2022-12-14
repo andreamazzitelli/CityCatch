@@ -13,9 +13,8 @@
         android:theme="@style/Theme.CityCatch"
         tools:targetApi="31">
         <activity
-            android:name=".LogInActivity"
+            android:name=".EntryPointActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.CityCatch">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
