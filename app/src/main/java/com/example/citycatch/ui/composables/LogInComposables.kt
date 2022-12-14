@@ -1,5 +1,6 @@
 package com.example.citycatch.ui.composables
 
+import android.content.Intent
 import android.util.Log
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.core.Animatable
@@ -30,11 +31,13 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.citycatch.MapsActivity
 import com.example.citycatch.R
 import com.example.citycatch.data.FirebaseRepository
 import kotlinx.coroutines.delay
@@ -69,7 +72,7 @@ fun LogInNavigation(){
 @Composable
 fun SplashScreen(navController: NavController) {
 
-    //val context = LocalContext.current
+    val context = LocalContext.current
     val scale = remember { Animatable(0f) }
 
     LaunchedEffect(key1 = true) {
@@ -92,8 +95,8 @@ fun SplashScreen(navController: NavController) {
         }
         else{
             //intent to map
-            FirebaseRepository.userSignOut() // temporary
-            Log.i("TAG LOGIN", FirebaseRepository.getUser().toString())
+            val intent = Intent(context, MapsActivity::class.java)
+            context.startActivity(intent)
         }
 
     }
@@ -109,6 +112,8 @@ fun SplashScreen(navController: NavController) {
 
 @Composable
 fun LoginPage(navController: NavHostController) {
+
+    val context = LocalContext.current
 
     Box(modifier = Modifier.fillMaxSize()) {
         ClickableText(
@@ -188,6 +193,8 @@ fun LoginPage(navController: NavHostController) {
                                 Log.i("TAG LOGIN", "SUCCESS")
                                 Log.i("TAG LOGIN", FirebaseRepository.getUserUID())
                                 Log.i("TAG LOGIN", FirebaseRepository.getUser()!!.email.toString())
+                                val intent = Intent(context, MapsActivity::class.java)
+                                context.startActivity(intent)
                             }
                             .addOnFailureListener {
                                 Log.i("TAG LOGIN", it.message.toString())
@@ -219,6 +226,8 @@ fun LoginPage(navController: NavHostController) {
 
 @Composable
 fun RegistrationPage(navController: NavHostController){
+
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -310,6 +319,9 @@ fun RegistrationPage(navController: NavHostController){
                                 .addOnSuccessListener {
                                     Log.i("TAG REGISTER", "Registered Successful")
                                     Log.i("TAG REGISTER", FirebaseRepository.getUser()!!.email.toString())
+
+                                    val intent = Intent(context, MapsActivity::class.java)
+                                    context.startActivity(intent)
                                 }
                                 .addOnFailureListener {
                                     Log.i("TAG REGISTER", it.message.toString())
