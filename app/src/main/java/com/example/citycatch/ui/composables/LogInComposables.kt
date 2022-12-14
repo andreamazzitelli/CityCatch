@@ -1,5 +1,6 @@
 package com.example.citycatch.ui.composables
 
+import android.app.Activity
 import android.content.Intent
 import android.util.Log
 import android.view.animation.OvershootInterpolator
@@ -31,7 +32,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -73,6 +73,7 @@ fun LogInNavigation(){
 fun SplashScreen(navController: NavController) {
 
     val context = LocalContext.current
+    val activity = LocalContext.current as? Activity
     val scale = remember { Animatable(0f) }
 
     LaunchedEffect(key1 = true) {
@@ -86,9 +87,7 @@ fun SplashScreen(navController: NavController) {
                 })
         )
         // Customize the delay time
-        Log.i("TAG DELAY", "Before")
         delay(2000L)
-        Log.i("TAG DELAY", "After")
 
         if(FirebaseRepository.getUser() == null){
             navController.navigate("log_in")
@@ -97,6 +96,8 @@ fun SplashScreen(navController: NavController) {
             //intent to map
             val intent = Intent(context, MapsActivity::class.java)
             context.startActivity(intent)
+            activity!!.finish()
+
         }
 
     }
@@ -114,6 +115,7 @@ fun SplashScreen(navController: NavController) {
 fun LoginPage(navController: NavHostController) {
 
     val context = LocalContext.current
+    val activity = LocalContext.current as? Activity
 
     Box(modifier = Modifier.fillMaxSize()) {
         ClickableText(
@@ -195,6 +197,7 @@ fun LoginPage(navController: NavHostController) {
                                 Log.i("TAG LOGIN", FirebaseRepository.getUser()!!.email.toString())
                                 val intent = Intent(context, MapsActivity::class.java)
                                 context.startActivity(intent)
+                                activity!!.finish()
                             }
                             .addOnFailureListener {
                                 Log.i("TAG LOGIN", it.message.toString())
@@ -228,6 +231,7 @@ fun LoginPage(navController: NavHostController) {
 fun RegistrationPage(navController: NavHostController){
 
     val context = LocalContext.current
+    val activity = LocalContext.current as? Activity
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -322,6 +326,7 @@ fun RegistrationPage(navController: NavHostController){
 
                                     val intent = Intent(context, MapsActivity::class.java)
                                     context.startActivity(intent)
+                                    activity!!.finish()
                                 }
                                 .addOnFailureListener {
                                     Log.i("TAG REGISTER", it.message.toString())

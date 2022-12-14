@@ -20,9 +20,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.citycatch.data.FirebaseRepository
 import com.example.citycatch.ui.theme.Orange
 import com.example.citycatch.utils.BottomNavItem
+import com.example.citycatch.viewmodel.MapViewModel
 
 @Composable
-fun MainScreen(){
+fun MainScreen(vm: MapViewModel){
     val navController = rememberNavController()
     Scaffold(
         bottomBar = { BottomNavigation(navController = navController) }
@@ -31,19 +32,22 @@ fun MainScreen(){
             modifier = Modifier.padding(it)
         ){
             NavigationGraph(
-                navController = navController)
+                navController = navController,
+                vm = vm
+            )
         }
     }
 }
 
 @Composable
-fun NavigationGraph(navController: NavHostController) {
+fun NavigationGraph(navController: NavHostController, vm: MapViewModel) {
     NavHost(navController, startDestination = BottomNavItem.Map.screen_route) {
         composable(BottomNavItem.Leaderboard.screen_route) {
             Left()
         }
         composable(BottomNavItem.Map.screen_route) {
-            Center()
+            GoogleMapCluster(vm = vm)
+            //Center()
         }
         composable(BottomNavItem.User.screen_route) {
             Right()
