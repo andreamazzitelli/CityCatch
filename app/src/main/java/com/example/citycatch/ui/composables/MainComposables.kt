@@ -5,9 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -19,6 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.citycatch.data.FirebaseRepository
 import com.example.citycatch.ui.theme.Orange
 import com.example.citycatch.utils.BottomNavItem
 
@@ -103,7 +102,16 @@ fun Left(){
 fun Right(){
     Box(modifier = Modifier
         .fillMaxSize()
-        .background(Color.Blue))
+        .background(Color.Blue)){
+        //for testing
+        Button(
+            onClick = {
+                FirebaseRepository.userSignOut()
+            }) {
+            Text(text = "LogOut")
+        }
+
+    }
 }
 @Composable
 fun Center(){
