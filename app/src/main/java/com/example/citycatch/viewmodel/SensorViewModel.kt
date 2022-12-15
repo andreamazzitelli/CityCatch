@@ -4,7 +4,9 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener2
 import android.hardware.SensorManager
+import android.location.Location
 import android.util.Log
+import androidx.activity.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -38,8 +40,17 @@ class SensorViewModel: ViewModel(), SensorEventListener2 {
     private var roll = 0.0f
     private var a = 0.5f
 
-    fun setBearing(b: Float) {
-        bearing = b
+    private var markerLocation = Location("")
+    private var userLocation = Location("")
+
+    fun setUserLocation(loc: Location){
+       userLocation = loc
+        Log.i("TAG SVM LOC", userLocation.toString())
+        //
+    }
+    fun setMarkerLocation(lat: Double, lon: Double){
+        markerLocation.latitude = lat
+        markerLocation.longitude = lon
     }
 
     fun setSensorManager(sm: SensorManager){

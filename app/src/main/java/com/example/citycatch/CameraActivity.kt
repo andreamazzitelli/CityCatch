@@ -14,14 +14,18 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import com.example.citycatch.ui.composables.CameraView
+import com.example.citycatch.viewmodel.MapViewModel
 import com.example.citycatch.viewmodel.SensorViewModel
+import com.google.android.gms.location.LocationServices
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class CameraActivity : ComponentActivity() {
 
     private val svm: SensorViewModel by viewModels {SensorViewModel.Factory}
+    private val vm: MapViewModel by viewModels { MapViewModel.Factory}
 
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -38,9 +42,22 @@ class CameraActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val intent = intent
+        val lat = intent.getDoubleExtra("marker_lat", 0.0)
+        val lon = intent.getDoubleExtra("marker_lon", 0.0)
+
+        Log.i("TAG INTENT", "$lat $lon")
+
         val sm = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         svm.setSensorManager(sm)
+        svm.setMarkerLocation(lat, lon)
         svm.registerListener()
+
+        vm.startLocalization(LocationServices.getFusedLocationProviderClient(this))
+
+        vm.location.observe(this, Observer {
+            svm.setUserLocation(it)
+        })
 
         setContent {
             CameraView(
@@ -49,6 +66,8 @@ class CameraActivity : ComponentActivity() {
                 onError = { Log.e("TAG", "View error:", it) }
             )
         }
+
+
 
         requestCameraPermission()
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -69,11 +88,18 @@ class CameraActivity : ComponentActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        vm.startLocalization(LocationServices.getFusedLocationProviderClient(this))
+    }
+
+
     override fun onRestart() {
         super.onRestart()
         val sm = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         svm.setSensorManager(sm)
         svm.registerListener()
+        vm.stopLocalization()
 
     }
 

@@ -126,12 +126,15 @@ fun Right(){
                 }) {
                 Text(text = "LogOut")
             }
+            /*
             Button(onClick = {
                 val intent = Intent(context, CameraActivity::class.java)
                 context.startActivity(intent)
             }) {
                 Text(text = "Go to Camera")
             }
+
+             */
         }
     }
 }

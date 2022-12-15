@@ -2,8 +2,10 @@ package com.example.citycatch.ui.composables
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.location.Location
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -11,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Observer
+import com.example.citycatch.CameraActivity
 import com.example.citycatch.R
 import com.example.citycatch.data.model.Place
 import com.example.citycatch.data.model.PlaceRenderer
@@ -136,7 +139,7 @@ fun MarkerClustering(context: Context, vm: MapViewModel, clusterM: ClusterManage
 
         clusterManager!!.setOnClusterItemInfoWindowClickListener {
 
-            if(it.seen) {
+            if(!it.seen) {
                 val location = vm.getLocation().value
 
                 val placeLocation = Location("")
@@ -145,9 +148,18 @@ fun MarkerClustering(context: Context, vm: MapViewModel, clusterM: ClusterManage
 
                 val distance = location!!.distanceTo(placeLocation)
 
-                //TODO Logica dello scattare o meno
-
-                Log.i("TAG C", "$distance")
+                if(distance > 500){
+                    Toast.makeText(context, "TOO FAR", Toast.LENGTH_LONG).show()
+                    Log.i("TAG BAD", "$distance")
+                }
+                else {
+                    Toast.makeText(context, "OK", Toast.LENGTH_LONG).show()
+                    Log.i("TAG OK", "$distance")
+                    val intent = Intent(context, CameraActivity::class.java)
+                    intent.putExtra("marker_lat", placeLocation.latitude)
+                    intent.putExtra("marker_lon", placeLocation.longitude)
+                    context.startActivity(intent)
+                }
             }
 
         }
