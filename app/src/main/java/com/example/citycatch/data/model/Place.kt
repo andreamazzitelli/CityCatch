@@ -1,6 +1,11 @@
 package com.example.citycatch.data.model
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.DrawableCompat
+import com.example.citycatch.R
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
@@ -37,7 +42,7 @@ data class Place(
 }
 
 class PlaceRenderer(
-    context: Context,
+    private var context: Context,
     map: GoogleMap,
     clusterManager: ClusterManager<Place>
 ): DefaultClusterRenderer<Place>(context, map, clusterManager){
@@ -49,8 +54,32 @@ class PlaceRenderer(
 
     override fun onBeforeClusterItemRendered(item: Place, markerOptions: MarkerOptions) {
         //super.onBeforeClusterItemRendered(item, markerOptions)
+
+        var marker = BitmapDescriptorFactory.defaultMarker()
+
+        val vectorDrawable = if(item.seen){
+            ResourcesCompat
+                .getDrawable(context.resources, R.drawable.green_marker, null)
+            }
+            else{
+                ResourcesCompat
+                    .getDrawable(context.resources, R.drawable.red_marker, null)
+                }
+
+        if (vectorDrawable!=null){
+            val bitmap = Bitmap.createBitmap(
+                vectorDrawable.intrinsicWidth,
+                vectorDrawable.intrinsicHeight,
+                Bitmap.Config.ARGB_8888
+            )
+            val canvas = Canvas(bitmap)
+            vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
+            vectorDrawable.draw(canvas)
+            marker = BitmapDescriptorFactory.fromBitmap(bitmap)
+        }
+
         markerOptions.title(item.title).position(item.position)
-            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+            .icon(marker)
     }
 
     override fun onClusterItemRendered(clusterItem: Place, marker: Marker) {

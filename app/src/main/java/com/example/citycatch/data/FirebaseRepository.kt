@@ -85,7 +85,9 @@ object FirebaseRepository {
             runBlocking {
                 launch {
 
-                    Log.i("TAG USER", "Pre Call")
+                    Log.i("TAG USER", firebaseAuth.currentUser!!.email.toString())
+                    Log.i("TAG USER", firebaseAuth.currentUser!!.uid)
+
                     webAPIs.addUser(firebaseAuth.currentUser!!.email.toString(), firebaseAuth.currentUser!!.uid)
                     Log.i("TAG USER", "Success")
                 }
