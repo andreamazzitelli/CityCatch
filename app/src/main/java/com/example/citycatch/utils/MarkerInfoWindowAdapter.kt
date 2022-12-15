@@ -21,14 +21,13 @@ class MarkerInfoWindowAdapter(private val context: Context) : GoogleMap.InfoWind
             R.id.text_view_title
         ).text = place.placeName
 
+        var button = view.findViewById<Button>(R.id.button)
+
         if (place.seen) {
-            view.findViewById<Button>(
-                R.id.button
-            ).text = ""
+            button.text = "GOT IT!"
+            button.isEnabled = false
         } else {
-            view.findViewById<Button>(
-                R.id.button
-            ).text = "SCATTA"
+            button.text = "TAKE PHOTO"
         }
 
         //il controllo del bottone forse va messo qua

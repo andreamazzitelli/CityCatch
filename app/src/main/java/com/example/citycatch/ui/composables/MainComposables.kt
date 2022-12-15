@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -114,6 +115,8 @@ fun Right(){
         .background(Color.Blue)){
         //for testing
         Column() {
+            Text(text = FirebaseRepository.getUser()!!.email.toString())
+            Spacer(modifier = Modifier.height(20.dp))
             Button(
                 onClick = {
                     FirebaseRepository.userSignOut()

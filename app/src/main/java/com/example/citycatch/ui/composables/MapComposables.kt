@@ -136,18 +136,19 @@ fun MarkerClustering(context: Context, vm: MapViewModel, clusterM: ClusterManage
 
         clusterManager!!.setOnClusterItemInfoWindowClickListener {
 
-            val location = vm.getLocation().value
+            if(it.seen) {
+                val location = vm.getLocation().value
 
-            val placeLocation = Location("")
-            placeLocation.latitude = it.lat.toDouble()
-            placeLocation.longitude = it.lon.toDouble()
+                val placeLocation = Location("")
+                placeLocation.latitude = it.lat.toDouble()
+                placeLocation.longitude = it.lon.toDouble()
 
+                val distance = location!!.distanceTo(placeLocation)
 
-            val distance = location!!.distanceTo(placeLocation)
+                //TODO Logica dello scattare o meno
 
-            //TODO Logica dello scattare o meno
-
-            Log.i("TAG C", "$distance")
+                Log.i("TAG C", "$distance")
+            }
 
         }
 
