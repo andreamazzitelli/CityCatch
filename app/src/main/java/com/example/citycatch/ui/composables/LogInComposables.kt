@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.util.Log
 import android.view.animation.OvershootInterpolator
+
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -20,11 +21,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
@@ -67,8 +70,6 @@ fun LogInNavigation(){
 
 }
 
-
-
 @Composable
 fun SplashScreen(navController: NavController) {
 
@@ -87,7 +88,9 @@ fun SplashScreen(navController: NavController) {
                 })
         )
         // Customize the delay time
+        
         delay(2000L)
+
 
         if(FirebaseRepository.getUser() == null){
             navController.navigate("log_in")
@@ -105,9 +108,28 @@ fun SplashScreen(navController: NavController) {
     Box(contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()) {
 
-        Image(painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Logo",
-            modifier = Modifier.scale(scale.value))
+        Column(
+            verticalArrangement = Arrangement.spacedBy((-70).dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Image(painter = painterResource(id = R.drawable.logo),
+                contentDescription = "Logo",
+                modifier = Modifier
+                    .scale(scale.value)
+                    .height(210.dp),
+                contentScale = ContentScale.Crop
+
+            )
+            Text(
+                "CityCatch",
+                style = TextStyle(
+                    fontSize = 50.sp,
+                    fontWeight = FontWeight.ExtraBold
+
+                ),
+                modifier = Modifier.scale(scale.value)
+            )
+        }
     }
 }
 
