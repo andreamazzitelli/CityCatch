@@ -117,8 +117,12 @@ fun MarkerClustering(context: Context, vm: MapViewModel, clusterM: ClusterManage
         }
 
         vm.landmarks.observe(lifecycle, Observer{
-            landmarks = it
-            clusterManager!!.addItems(landmarks)
+            Log.i("TAG PLACES", "Observing")
+            if(it.isNotEmpty()) {
+                Log.i("TAG PLACES", "Not Empty")
+                landmarks = it
+                clusterManager!!.addItems(landmarks)
+            }
         })
 
         clusterManager!!.renderer = PlaceRenderer(context, map, clusterManager!!)

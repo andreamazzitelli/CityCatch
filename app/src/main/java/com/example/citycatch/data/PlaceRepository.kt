@@ -11,11 +11,11 @@ class PlaceRepository {
 
     suspend fun read(): List<Place>{
         return try {
-            val reply = this.webAPIs.getPlaces()
-            Log.i("PLACES", "Here")
+            val reply = this.webAPIs.getPlacesUser(FirebaseRepository.getUserUID())
+            Log.i("TAG PLACES", "Here")
             reply.body()!!
         } catch (e: Exception){
-            Log.i("SUSPEND ERROR", "Failed to Retrieve Data from Remote Server")
+            Log.i("TAG SUSPEND ERROR", "Failed to Retrieve Data from Remote Server")
             emptyList()
         }
     }

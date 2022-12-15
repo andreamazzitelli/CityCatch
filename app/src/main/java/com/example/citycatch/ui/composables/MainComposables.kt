@@ -1,5 +1,6 @@
 package com.example.citycatch.ui.composables
 
+import android.app.Activity
 import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -17,6 +18,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.citycatch.CameraActivity
+import com.example.citycatch.EntryPointActivity
 import com.example.citycatch.MapsActivity
 import com.example.citycatch.data.FirebaseRepository
 import com.example.citycatch.ui.theme.Orange
@@ -106,6 +108,7 @@ fun Left(){
 @Composable
 fun Right(){
     val context = LocalContext.current
+    val activity = LocalContext.current as? Activity
     Box(modifier = Modifier
         .fillMaxSize()
         .background(Color.Blue)){
@@ -114,6 +117,9 @@ fun Right(){
             Button(
                 onClick = {
                     FirebaseRepository.userSignOut()
+                    val intent = Intent(context, EntryPointActivity::class.java)
+                    activity!!.startActivity(intent)
+                    activity!!.finish()
                 }) {
                 Text(text = "LogOut")
             }

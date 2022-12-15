@@ -4,13 +4,18 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import android.graphics.Rect
+import android.util.Log
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.internal.utils.ImageUtil
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.citycatch.utils.APIs
+import com.example.citycatch.utils.WebAPIs
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.google.firebase.storage.ktx.storageMetadata
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.ByteArrayOutputStream
 
 
@@ -26,6 +31,8 @@ object FirebaseRepository {
     fun getAuthInstance() = firebaseAuth
     fun userSignOut() = firebaseAuth.signOut()
 
+    private var webAPIs: APIs = WebAPIs().retrofit.create(APIs::class.java)
+
     @SuppressLint("RestrictedApi")
     fun addToStorage(user: String, markerName: String, image: ImageProxy): Boolean{
 
@@ -33,7 +40,7 @@ object FirebaseRepository {
 
         val byteArray = ImageUtil.yuvImageToJpegByteArray(
             image,
-            Rect(0, 0, image.width, image.height),
+            null, //Rect(0, 0, image.width, image.height),
             100
         )
 
@@ -72,4 +79,23 @@ object FirebaseRepository {
 
     }
 
+    fun addUserToDB(){
+
+        try {
+            runBlocking {
+                launch {
+
+                    Log.i("TAG USER", "Pre Call")
+                    webAPIs.addUser(firebaseAuth.currentUser!!.email.toString(), firebaseAuth.currentUser!!.uid)
+                    Log.i("TAG USER", "Success")
+                }
+            }
+
+        }
+        catch (e: Exception){
+            Log.i("TAG USER", "Failed")
+        }
+    }
+
 }
+

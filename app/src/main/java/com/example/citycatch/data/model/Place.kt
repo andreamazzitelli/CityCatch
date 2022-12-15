@@ -22,7 +22,12 @@ data class Place(
 
     @SerializedName("lon")
     val lon: String,
-    val seen: Boolean = false
+
+    @SerializedName("visited")
+    val seen: Boolean = false,
+
+    @SerializedName("n_visitators")
+    val n_visitors: Int = 0
 
 ): ClusterItem {
     override fun getPosition(): LatLng = LatLng(lat.toDouble(), lon.toDouble())

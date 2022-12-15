@@ -6,14 +6,21 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 
 interface APIs{
-    // the structure here is using @METHOD("path")
-    //signature of the function that is something like
-    //suspend fun doPost(@Query("time") time:String, @Query("azimuth") azimuth:Float) : Response<String>
+
     @GET("/places")
     suspend fun getPlaces() : Response<List<Place>>
+
+    @GET("/places/{uid}")
+    suspend fun getPlacesUser(@Path("uid")userUid: String) : Response<List<Place>>
+
+    @POST("/addUser")
+    suspend fun addUser(@Query("mail") mail: String, @Query("id") id: String) : Unit
 }
 
 class WebAPIs {

@@ -44,6 +44,7 @@ import com.example.citycatch.MapsActivity
 import com.example.citycatch.R
 import com.example.citycatch.data.FirebaseRepository
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun LogInNavigation(){
@@ -214,9 +215,10 @@ fun LoginPage(navController: NavHostController) {
                     if (email.isNotEmpty() && passwordP.isNotEmpty()){
                         FirebaseRepository.getAuthInstance().signInWithEmailAndPassword(email, passwordP)
                             .addOnSuccessListener {
-                                Log.i("TAG LOGIN", "SUCCESS")
+
                                 Log.i("TAG LOGIN", FirebaseRepository.getUserUID())
                                 Log.i("TAG LOGIN", FirebaseRepository.getUser()!!.email.toString())
+
                                 val intent = Intent(context, MapsActivity::class.java)
                                 context.startActivity(intent)
                                 activity!!.finish()
@@ -345,6 +347,8 @@ fun RegistrationPage(navController: NavHostController){
                                 .addOnSuccessListener {
                                     Log.i("TAG REGISTER", "Registered Successful")
                                     Log.i("TAG REGISTER", FirebaseRepository.getUser()!!.email.toString())
+
+                                    FirebaseRepository.addUserToDB()
 
                                     val intent = Intent(context, MapsActivity::class.java)
                                     context.startActivity(intent)
