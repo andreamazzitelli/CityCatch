@@ -4,10 +4,10 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.net.Uri
 import android.util.Log
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.internal.utils.ImageUtil
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.citycatch.utils.APIs
 import com.example.citycatch.utils.WebAPIs
 import com.google.firebase.auth.FirebaseAuth
@@ -78,11 +78,11 @@ object FirebaseRepository {
          */
 
     }
-
-    fun addProfileToStorage(){
-
+    fun addProfileToStorage(imageUri: Uri){
+        val imageRef = storageReference.child("${firebaseAuth.currentUser!!.uid}/profile.jpg")
+        //val file = File(imageUri.path)
+        imageRef.putFile(imageUri)
     }
-
     fun addUserToDB(){
 
         try {

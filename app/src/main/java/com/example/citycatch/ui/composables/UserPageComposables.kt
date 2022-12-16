@@ -81,8 +81,10 @@ fun UpperBlock(){
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.GetContent()
         ){ uri: Uri? ->
-            Log.i("TAG IMAGE", uri.toString())
-            uri?.let { imageUri.value=it.toString() }
+            uri?.let {
+                imageUri.value=it.toString()
+                FirebaseRepository.addProfileToStorage(it)
+            }
          }
 
     Row(
@@ -111,20 +113,20 @@ fun UserImageBlock(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        Image(
-            painter = painter ,
-            contentDescription = "",
-            modifier = Modifier
-                .border(
-                    width = 1.dp,
-                    color = Color.LightGray,
-                    shape = CircleShape
-                )
-                .padding(3.dp)
-                .clip(CircleShape)
-                .size(100.dp)
-                .clickable { launcher.launch("image/*")}
-        )
+            Image(
+                painter = painter,
+                contentDescription = "",
+                modifier = Modifier
+                    .border(
+                        width = 1.dp,
+                        color = Color.LightGray,
+                        shape = CircleShape
+                    )
+                    .padding(3.dp)
+                    .clip(CircleShape)
+                    .size(100.dp)
+                    .clickable { launcher.launch("image/*") }
+            )
         Spacer(modifier = Modifier.height(10.dp))
         Text(text = "username")
     }
