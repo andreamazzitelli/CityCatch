@@ -2,6 +2,11 @@ package com.example.citycatch.ui.composables
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
+import android.util.Log
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,15 +14,19 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberImagePainter
 import com.example.citycatch.EntryPointActivity
 import com.example.citycatch.R
 import com.example.citycatch.data.FirebaseRepository
@@ -54,6 +63,28 @@ fun UserPage(){
 
 @Composable
 fun UpperBlock(){
+
+    val imageUri = rememberSaveable {
+            mutableStateOf("")
+        }
+
+    val painter =
+        rememberImagePainter(
+            if (imageUri.value.isEmpty()){
+                R.drawable.user
+            }else{
+                imageUri.value
+            }
+        )
+
+    val launcher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent()
+        ){ uri: Uri? ->
+            Log.i("TAG IMAGE", uri.toString())
+            uri?.let { imageUri.value=it.toString() }
+         }
+
     Row(
         modifier = Modifier
             .wrapContentSize(),
@@ -61,7 +92,10 @@ fun UpperBlock(){
         verticalAlignment = Alignment.CenterVertically
     ){
 
-        UserImageBlock()
+        UserImageBlock(
+            painter = painter,
+            launcher = launcher
+        )
         Spacer(modifier = Modifier.width(40.dp))
         ProfileStat(value = "600", name =  "points")
         Spacer(modifier = Modifier.width(40.dp))
@@ -70,12 +104,15 @@ fun UpperBlock(){
 }
 
 @Composable
-fun UserImageBlock(){
+fun UserImageBlock(
+    painter: Painter,
+    launcher: ManagedActivityResultLauncher<String, Uri?>
+){
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Image(
-            painter = painterResource(id = R.drawable.user) ,
+            painter = painter ,
             contentDescription = "",
             modifier = Modifier
                 .border(
@@ -86,6 +123,7 @@ fun UserImageBlock(){
                 .padding(3.dp)
                 .clip(CircleShape)
                 .size(100.dp)
+                .clickable { launcher.launch("image/*")}
         )
         Spacer(modifier = Modifier.height(10.dp))
         Text(text = "username")

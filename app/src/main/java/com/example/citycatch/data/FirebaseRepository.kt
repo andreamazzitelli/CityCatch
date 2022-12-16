@@ -79,6 +79,10 @@ object FirebaseRepository {
 
     }
 
+    fun addProfileToStorage(){
+
+    }
+
     fun addUserToDB(){
 
         try {
