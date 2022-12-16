@@ -39,6 +39,8 @@ fun MainScreen(vm: MapViewModel){
                 navController = navController,
                 vm = vm
             )
+
+
         }
     }
 }
@@ -54,7 +56,8 @@ fun NavigationGraph(navController: NavHostController, vm: MapViewModel) {
             //Center()
         }
         composable(BottomNavItem.User.screen_route) {
-            Right()
+            UserPage()
+            //Right()
         }
     }
 }
@@ -137,10 +140,4 @@ fun Right(){
              */
         }
     }
-}
-@Composable
-fun Center(){
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(Color.Green))
 }
