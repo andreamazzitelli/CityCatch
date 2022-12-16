@@ -83,6 +83,10 @@ object FirebaseRepository {
         //val file = File(imageUri.path)
         imageRef.putFile(imageUri)
     }
+    fun addDefaultToStorage(byteArray: ByteArray){
+        val imageRef = storageReference.child("${firebaseAuth.currentUser!!.uid}/profile.jpg")
+        imageRef.putBytes(byteArray)
+    }
     fun addUserToDB(){
 
         try {

@@ -2,6 +2,8 @@ package com.example.citycatch.ui.composables
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import android.view.animation.OvershootInterpolator
 
@@ -45,6 +47,7 @@ import com.example.citycatch.R
 import com.example.citycatch.data.FirebaseRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
 
 @Composable
 fun LogInNavigation(){
@@ -349,6 +352,16 @@ fun RegistrationPage(navController: NavHostController){
                                     Log.i("TAG REGISTER", FirebaseRepository.getUser()!!.email.toString())
 
                                     FirebaseRepository.addUserToDB()
+
+                                    // add default profile
+                                    val image = context.assets.open("user.png")
+                                    val bitmap = BitmapFactory.decodeStream(image)
+                                    image.close()
+                                    val stream = ByteArrayOutputStream()
+                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                                    val imageBytes = stream.toByteArray()
+
+                                    FirebaseRepository.addDefaultToStorage(imageBytes)
 
                                     val intent = Intent(context, MapsActivity::class.java)
                                     context.startActivity(intent)
