@@ -26,11 +26,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
 import com.example.citycatch.EntryPointActivity
 import com.example.citycatch.R
 import com.example.citycatch.data.FirebaseRepository
 import com.example.citycatch.ui.theme.Orange
+import com.google.firebase.ktx.Firebase
 
 @Composable
 fun UserPage(){
@@ -113,8 +115,9 @@ fun UserImageBlock(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-            Image(
-                painter = painter,
+            AsyncImage(
+                model= "https://firebasestorage.googleapis.com/v0/b/citycatch.appspot.com/o/${FirebaseRepository.getUserUID()}%2Fprofile.jpg?alt=media&token=${FirebaseRepository.getUser()!!.getIdToken(false)}",
+                //painter = painter,
                 contentDescription = "",
                 modifier = Modifier
                     .border(
@@ -127,6 +130,7 @@ fun UserImageBlock(
                     .size(100.dp)
                     .clickable { launcher.launch("image/*") }
             )
+
         Spacer(modifier = Modifier.height(10.dp))
         Text(text = "username")
     }
