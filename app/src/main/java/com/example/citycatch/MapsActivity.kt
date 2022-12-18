@@ -10,15 +10,30 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
-import com.example.citycatch.ui.composables.GoogleMapCluster
+import androidx.core.content.ContextCompat
 import com.example.citycatch.ui.composables.MainScreen
 import com.example.citycatch.viewmodel.FirebaseViewModel
 import com.example.citycatch.viewmodel.MapViewModel
 import com.google.android.gms.location.LocationServices
 
 class MapsActivity: ComponentActivity(){
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()){ isGranted ->
+            if(isGranted){
+                vm.startLocalization(LocationServices.getFusedLocationProviderClient(this))
+                setContent{
+                    MainScreen(vm = vm, fm = fm)
+                }
+                Log.i("TAG PERMISSION", "Granted")
+            }
+            else{
+                Log.i("TAG PERMISSION", "Denied")
+            }
+        }
 
     private val vm: MapViewModel by viewModels {MapViewModel.Factory}
     private val fm: FirebaseViewModel by viewModels {FirebaseViewModel.Factory}
@@ -28,9 +43,11 @@ class MapsActivity: ComponentActivity(){
 
         fm.getImages()
 
+        /*
         if(checkPermissions()){
             if(isLocationEnabled()){
                 if(checkNotPermissions()){
+
                     requestPermission()
                     return
                 }
@@ -45,8 +62,13 @@ class MapsActivity: ComponentActivity(){
                 startActivity(intent)
             }
         }else{
+            Log.i("TAG PERM", "Permission Request")
             requestPermission()
         }
+        */
+
+        requestLocationPermissions()
+
     }
 
     override fun onResume() {
@@ -90,6 +112,22 @@ class MapsActivity: ComponentActivity(){
             ) != PackageManager.PERMISSION_GRANTED)
         {return true}
         return false
+    }
+
+    private fun requestLocationPermissions(){
+        when{
+            (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED )
+            && (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) -> {
+                    Log.i("TAG PERMISSION", "Permission previously granted")
+                }
+
+            ActivityCompat.shouldShowRequestPermissionRationale(this,
+            Manifest.permission.ACCESS_FINE_LOCATION) -> Log.i("TAG PERMISSION", "Show Localization Permission Dialog")
+
+            else -> requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
     }
 
 
