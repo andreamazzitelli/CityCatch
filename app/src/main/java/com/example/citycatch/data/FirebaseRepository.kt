@@ -31,6 +31,9 @@ object FirebaseRepository {
     fun getAuthInstance() = firebaseAuth
     fun userSignOut() = firebaseAuth.signOut()
 
+    fun getStorageReference() = storageReference
+    fun getStorage() = firebaseStorage
+
     private var webAPIs: APIs = WebAPIs().retrofit.create(APIs::class.java)
 
     @SuppressLint("RestrictedApi")
@@ -106,6 +109,7 @@ object FirebaseRepository {
             Log.i("TAG USER", "Failed")
         }
     }
+
 
 }
 

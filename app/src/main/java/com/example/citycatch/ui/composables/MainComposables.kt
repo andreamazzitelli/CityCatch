@@ -24,10 +24,11 @@ import com.example.citycatch.MapsActivity
 import com.example.citycatch.data.FirebaseRepository
 import com.example.citycatch.ui.theme.Orange
 import com.example.citycatch.utils.BottomNavItem
+import com.example.citycatch.viewmodel.FirebaseViewModel
 import com.example.citycatch.viewmodel.MapViewModel
 
 @Composable
-fun MainScreen(vm: MapViewModel){
+fun MainScreen(vm: MapViewModel, fm: FirebaseViewModel){
     val navController = rememberNavController()
     Scaffold(
         bottomBar = { BottomNavigation(navController = navController) }
@@ -37,7 +38,8 @@ fun MainScreen(vm: MapViewModel){
         ){
             NavigationGraph(
                 navController = navController,
-                vm = vm
+                vm = vm,
+                fm = fm
             )
 
 
@@ -46,7 +48,7 @@ fun MainScreen(vm: MapViewModel){
 }
 
 @Composable
-fun NavigationGraph(navController: NavHostController, vm: MapViewModel) {
+fun NavigationGraph(navController: NavHostController, vm: MapViewModel, fm: FirebaseViewModel) {
     NavHost(navController, startDestination = BottomNavItem.Map.screen_route) {
         composable(BottomNavItem.Leaderboard.screen_route) {
             Left()
@@ -56,7 +58,7 @@ fun NavigationGraph(navController: NavHostController, vm: MapViewModel) {
             //Center()
         }
         composable(BottomNavItem.User.screen_route) {
-            UserPage()
+            UserPage(fm)
             //Right()
         }
     }

@@ -14,15 +14,19 @@ import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import com.example.citycatch.ui.composables.GoogleMapCluster
 import com.example.citycatch.ui.composables.MainScreen
+import com.example.citycatch.viewmodel.FirebaseViewModel
 import com.example.citycatch.viewmodel.MapViewModel
 import com.google.android.gms.location.LocationServices
 
 class MapsActivity: ComponentActivity(){
 
     private val vm: MapViewModel by viewModels {MapViewModel.Factory}
+    private val fm: FirebaseViewModel by viewModels {FirebaseViewModel.Factory}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        fm.getImages()
 
         if(checkPermissions()){
             if(isLocationEnabled()){
@@ -32,7 +36,7 @@ class MapsActivity: ComponentActivity(){
                 }
                 vm.startLocalization(LocationServices.getFusedLocationProviderClient(this))
                 setContent {
-                    MainScreen(vm = vm)
+                    MainScreen(vm = vm, fm = fm)
                     //GoogleMapCluster(vm = vm)
                 }
             }else{
