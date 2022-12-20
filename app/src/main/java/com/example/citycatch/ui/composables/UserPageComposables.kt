@@ -30,6 +30,7 @@ import coil.compose.rememberImagePainter
 import com.example.citycatch.EntryPointActivity
 import com.example.citycatch.R
 import com.example.citycatch.data.FirebaseRepository
+import com.example.citycatch.ui.theme.LightOrange
 import com.example.citycatch.ui.theme.Orange
 import com.example.citycatch.viewmodel.FirebaseViewModel
 
@@ -223,6 +224,7 @@ fun RowElement(link: String){
             backgroundColor = Color(0x80E4E4E4),
             modifier = Modifier
                 .padding(4.dp)
+                .background(LightOrange)
                 .fillMaxSize()
         ) {
             AsyncImage(

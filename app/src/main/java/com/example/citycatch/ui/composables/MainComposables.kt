@@ -51,14 +51,15 @@ fun MainScreen(vm: MapViewModel, fm: FirebaseViewModel){
 fun NavigationGraph(navController: NavHostController, vm: MapViewModel, fm: FirebaseViewModel) {
     NavHost(navController, startDestination = BottomNavItem.Map.screen_route) {
         composable(BottomNavItem.Leaderboard.screen_route) {
-            Left()
+            //Left()
+            Leaderboard(vm = fm)
         }
         composable(BottomNavItem.Map.screen_route) {
             GoogleMapCluster(vm = vm)
             //Center()
         }
         composable(BottomNavItem.User.screen_route) {
-            UserPage(fm)
+            UserPage(vm = fm)
             //Right()
         }
     }

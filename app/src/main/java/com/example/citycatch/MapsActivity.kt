@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.citycatch.ui.composables.GoogleMapCluster
 import com.example.citycatch.ui.composables.MainScreen
 import com.example.citycatch.viewmodel.FirebaseViewModel
 import com.example.citycatch.viewmodel.MapViewModel
@@ -24,10 +25,6 @@ class MapsActivity: ComponentActivity(){
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()){ isGranted ->
             if(isGranted){
-                vm.startLocalization(LocationServices.getFusedLocationProviderClient(this))
-                setContent{
-                    MainScreen(vm = vm, fm = fm)
-                }
                 Log.i("TAG PERMISSION", "Granted")
             }
             else{
@@ -42,7 +39,6 @@ class MapsActivity: ComponentActivity(){
         super.onCreate(savedInstanceState)
 
         fm.getImages()
-
         /*
         if(checkPermissions()){
             if(isLocationEnabled()){
@@ -66,6 +62,11 @@ class MapsActivity: ComponentActivity(){
             requestPermission()
         }
         */
+
+        vm.startLocalization(LocationServices.getFusedLocationProviderClient(this))
+        setContent{
+            MainScreen(vm = vm, fm = fm)
+        }
 
         requestLocationPermissions()
 

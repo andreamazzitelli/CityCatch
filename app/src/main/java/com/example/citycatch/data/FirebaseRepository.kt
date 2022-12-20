@@ -11,6 +11,7 @@ import androidx.camera.core.internal.utils.ImageUtil
 import com.example.citycatch.utils.APIs
 import com.example.citycatch.utils.WebAPIs
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.google.firebase.storage.ktx.storageMetadata
@@ -26,6 +27,9 @@ object FirebaseRepository {
     private var firebaseStorage = Firebase.storage
     private var storageReference = firebaseStorage.reference
 
+    private val realTimeDB = Firebase.database("https://citycatch-default-rtdb.firebaseio.com/")
+    private val referenceRealDB = realTimeDB.getReference("scores")
+
     fun getUser() = firebaseAuth.currentUser
     fun getUserUID() = firebaseAuth.currentUser!!.uid
     fun getAuthInstance() = firebaseAuth
@@ -33,6 +37,8 @@ object FirebaseRepository {
 
     fun getStorageReference() = storageReference
     fun getStorage() = firebaseStorage
+
+    fun getReferenceRDB() = referenceRealDB
 
     private var webAPIs: APIs = WebAPIs().retrofit.create(APIs::class.java)
 
