@@ -26,6 +26,10 @@ class MapsActivity: ComponentActivity(){
         registerForActivityResult(ActivityResultContracts.RequestPermission()){ isGranted ->
             if(isGranted){
                 Log.i("TAG PERMISSION", "Granted")
+                vm.startLocalization(LocationServices.getFusedLocationProviderClient(this))
+                setContent{
+                    MainScreen(vm = vm, fm = fm)
+                }
             }
             else{
                 Log.i("TAG PERMISSION", "Denied")
@@ -62,12 +66,6 @@ class MapsActivity: ComponentActivity(){
             requestPermission()
         }
         */
-
-        vm.startLocalization(LocationServices.getFusedLocationProviderClient(this))
-        setContent{
-            MainScreen(vm = vm, fm = fm)
-        }
-
         requestLocationPermissions()
 
     }
@@ -122,6 +120,11 @@ class MapsActivity: ComponentActivity(){
             && (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) -> {
                     Log.i("TAG PERMISSION", "Permission previously granted")
+
+                vm.startLocalization(LocationServices.getFusedLocationProviderClient(this))
+                setContent{
+                    MainScreen(vm = vm, fm = fm)
+                }
                 }
 
             ActivityCompat.shouldShowRequestPermissionRationale(this,
