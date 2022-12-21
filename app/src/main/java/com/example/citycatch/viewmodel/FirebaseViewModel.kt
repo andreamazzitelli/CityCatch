@@ -1,6 +1,14 @@
 package com.example.citycatch.viewmodel
 
+import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.util.Log
+import androidx.camera.core.ImageProxy
+import androidx.camera.core.internal.utils.ImageUtil
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -38,6 +46,11 @@ class FirebaseViewModel : ViewModel() {
     val userScores: LiveData<MutableList<UserScore>> = _userScores
 
     private val orderedScores = FirebaseRepository.getReferenceRDB().orderByValue()
+
+    private val _imageBitMap: MutableLiveData<ImageBitmap> = MutableLiveData<ImageBitmap>(ImageBitmap(1,1))
+    val imageBitmap: LiveData<ImageBitmap> = _imageBitMap
+
+    private var updateImage = true
 
     init {
         loadDataFromFirebase()
@@ -103,6 +116,28 @@ class FirebaseViewModel : ViewModel() {
                     }
                 }
             }
+    }
+
+    @SuppressLint("RestrictedApi")
+    fun setImageBitmap(imageProxy: ImageProxy){
+
+
+        if(updateImage){
+            Log.i("TAG IMAGE SET", "Setting")
+            val byteArray = ImageUtil.yuvImageToJpegByteArray(imageProxy, null, 100)
+
+            val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+            val matrix = Matrix().apply { postRotate(90f) }
+            val flipped =
+                Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+
+            _imageBitMap.value = flipped.asImageBitmap()
+        }
+    }
+
+    fun updateImageChangeState(){
+        Log.i("TAG IMAGE SWITCH", "Change")
+        updateImage = !updateImage
     }
 
 }

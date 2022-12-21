@@ -1,20 +1,16 @@
 package com.example.citycatch
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.citycatch.ui.composables.GoogleMapCluster
 import com.example.citycatch.ui.composables.MainScreen
 import com.example.citycatch.viewmodel.FirebaseViewModel
 import com.example.citycatch.viewmodel.MapViewModel

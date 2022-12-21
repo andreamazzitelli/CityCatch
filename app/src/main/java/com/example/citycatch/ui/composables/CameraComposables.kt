@@ -3,34 +3,38 @@ package com.example.citycatch.ui.composables
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
-import android.util.Size as Size2
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.Lens
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -44,6 +48,10 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import androidx.lifecycle.Observer
 import com.example.citycatch.R
+import com.example.citycatch.ui.theme.Green
+import com.example.citycatch.ui.theme.LightOrange
+import com.example.citycatch.ui.theme.Red
+import com.example.citycatch.viewmodel.FirebaseViewModel
 
 
 @SuppressLint("UnsafeOptInUsageError", "RestrictedApi")
@@ -51,12 +59,20 @@ import com.example.citycatch.R
 fun CameraView(
     executor: Executor,
     sensorsViewModel: SensorViewModel,
+    firebaseViewModel: FirebaseViewModel,
     onError: (ImageCaptureException) -> Unit
 ){
 
     var check by remember {
         mutableStateOf(false)
     }
+
+    val popUp =  remember {
+        mutableStateOf(false)
+    }
+
+
+    val image = firebaseViewModel.imageBitmap.observeAsState()
 
     val lensFacing = CameraSelector.LENS_FACING_BACK
 
@@ -91,8 +107,13 @@ fun CameraView(
 
                 val labelsText = labels.map {it.text}
 
-                check = labelsText.contains("Statue")
-
+                if(labelsText.contains("Statue")) {
+                    firebaseViewModel.setImageBitmap(it)
+                    check = true
+                }
+                else{
+                    check = false
+                }
                 //FirebaseRepository.addToStorage("giorgia", "coastal", it)
 
                 it.close()
@@ -127,31 +148,120 @@ fun CameraView(
             { previewView },
             modifier = Modifier.fillMaxSize()
         )
-        if(check)
+        if(check) {
             OverlayGraphics(color = Color.Green)
-        else
+            IconButton(
+                modifier = Modifier.padding(bottom = 20.dp),
+                onClick = {
+                    Log.i("TAG IMAGE", "Set to True")
+                    firebaseViewModel.updateImageChangeState()
+                    popUp.value = true
+                },
+                content = {
+                    Icon(
+                        imageVector = Icons.Sharp.Lens,
+                        contentDescription = "Take picture",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(100.dp)
+                            .padding(1.dp)
+                            .border(1.dp, Color.White, CircleShape)
+                    )
+                }
+            )
+        }
+        else {
             OverlayGraphics(color = Color.Red)
 
-        IconButton(
-            modifier = Modifier.padding(bottom = 20.dp),
-            onClick = {
-                Log.i("TAG", "ON CLICK")
-            },
-            content = {
-                Icon(
-                    imageVector = Icons.Sharp.Lens,
-                    contentDescription = "Take picture",
-                    tint = Color.White,
-                    modifier = Modifier
-                        .size(100.dp)
-                        .padding(1.dp)
-                        .border(1.dp, Color.White, CircleShape)
+            IconButton(
+                modifier = Modifier.padding(bottom = 20.dp),
+                enabled = false,
+                onClick = {},
+                content = {
+                    Icon(
+                        imageVector = Icons.Sharp.Lens,
+                        contentDescription = "",
+                        tint = Color.LightGray,
+                        modifier = Modifier
+                            .size(100.dp)
+                            .padding(1.dp)
+                            .border(1.dp, Color.White, CircleShape)
+                    )
+                }
+            )
+        }
+    }
+
+    Pointer(sensorsViewModel)
+
+    if(popUp.value){
+        Log.i("IMAGE", "PopU")
+        PopUp(popUp, image.value!!, firebaseViewModel)
+    }
+
+}
+
+@Composable
+fun PopUp(state: MutableState<Boolean>, image: ImageBitmap, fm:FirebaseViewModel){
+
+    Log.i("TAG IMAGE", "After Turn")
+
+    AlertDialog(
+        modifier = Modifier.clip(RoundedCornerShape(20.dp)),
+        backgroundColor = LightOrange,
+        onDismissRequest = { state.value = false },
+        title = {
+            Column (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(),
+            ){
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "Do you like this Photo?",
+                    textAlign = TextAlign.Center
                 )
             }
-        )
-    }
-    Pointer(sensorsViewModel)
+        },
+
+        text = {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    bitmap = image,
+                    contentDescription = ""
+                )
+            }
+
+        },
+        buttons = {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Button(
+                    colors = ButtonDefaults.buttonColors(Green),
+                    onClick = { /*TODO*/ }
+                ) {
+                    Text(text = "Save it!")
+                }
+
+                Button(
+                    colors = ButtonDefaults.buttonColors(Red),
+                    onClick = {
+                        state.value = false
+                        fm.updateImageChangeState()
+                    }
+                ) {
+                    Text(text = "Take it Again")
+                }
+            }
+        }
+    )
 }
+
 
 @Composable
 fun Pointer(sensorsViewModel: SensorViewModel){

@@ -16,6 +16,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.example.citycatch.ui.composables.CameraView
+import com.example.citycatch.viewmodel.FirebaseViewModel
 import com.example.citycatch.viewmodel.MapViewModel
 import com.example.citycatch.viewmodel.SensorViewModel
 import com.google.android.gms.location.LocationServices
@@ -26,6 +27,7 @@ class CameraActivity : ComponentActivity() {
 
     private val svm: SensorViewModel by viewModels {SensorViewModel.Factory}
     private val vm: MapViewModel by viewModels { MapViewModel.Factory}
+    private val fm: FirebaseViewModel by viewModels { FirebaseViewModel.Factory }
 
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -63,6 +65,7 @@ class CameraActivity : ComponentActivity() {
             CameraView(
                 executor = cameraExecutor,
                 sensorsViewModel = svm,
+                firebaseViewModel = fm,
                 onError = { Log.e("TAG", "View error:", it) }
             )
         }

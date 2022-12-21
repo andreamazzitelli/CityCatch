@@ -46,7 +46,6 @@ import com.example.citycatch.MapsActivity
 import com.example.citycatch.R
 import com.example.citycatch.data.FirebaseRepository
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 
 @Composable
