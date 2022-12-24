@@ -290,7 +290,6 @@ fun SuccessPopUp(state: MutableState<Boolean>, vm: MapViewModel){
 @Composable
 fun FailurePopUp(state: MutableState<Boolean>){
 
-
     AlertDialog(
         modifier = Modifier.clip(RoundedCornerShape(20.dp)),
         backgroundColor = LightOrange,
@@ -393,7 +392,7 @@ fun PopUp(
                         image.compress(Bitmap.CompressFormat.JPEG, 100, stream)
                         val imageBytes = stream.toByteArray()
 
-                        val metadata = storageMetadata {
+                        val metadata = storageMetadata { //TODO add info here
                             contentType = "image/jpg"
                             setCustomMetadata("Location Name", markerName)
                             setCustomMetadata("Latitude", "")

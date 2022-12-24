@@ -7,17 +7,28 @@ import android.content.Intent
 import android.location.Location
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Observer
 import com.example.citycatch.CameraActivity
 import com.example.citycatch.R
 import com.example.citycatch.data.model.Place
 import com.example.citycatch.data.model.PlaceRenderer
+import com.example.citycatch.ui.theme.LightOrange
+import com.example.citycatch.ui.theme.Orange
 import com.example.citycatch.utils.MarkerInfoWindowAdapter
 import com.example.citycatch.viewmodel.MapViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -114,6 +125,10 @@ fun MarkerClustering(context: Context, vm: MapViewModel, clusterM: ClusterManage
     val lifecycle = LocalLifecycleOwner.current
     val activity = LocalContext.current as Activity
 
+    val tooFarPopUp = remember {
+        mutableStateOf(false)
+    }
+
     MapEffect{ map->
 
         if(clusterManager == null){
@@ -151,11 +166,12 @@ fun MarkerClustering(context: Context, vm: MapViewModel, clusterM: ClusterManage
                 val distance = location!!.distanceTo(placeLocation)
 
                 if(distance > 500){
-                    Toast.makeText(context, "TOO FAR", Toast.LENGTH_LONG).show()
+                    //Toast.makeText(context, "TOO FAR", Toast.LENGTH_LONG).show()
+                    tooFarPopUp.value = true
                     Log.i("TAG BAD", "$distance")
                 }
                 else {
-                    Toast.makeText(context, "OK", Toast.LENGTH_LONG).show()
+                    //Toast.makeText(context, "OK", Toast.LENGTH_LONG).show()
                     Log.i("TAG OK", "$distance")
                     val intent = Intent(context, CameraActivity::class.java)
                     intent.putExtra("marker_lat", placeLocation.latitude)
@@ -190,4 +206,55 @@ fun MarkerClustering(context: Context, vm: MapViewModel, clusterM: ClusterManage
 
 
     }
+
+    if(tooFarPopUp.value){
+        TooFarPopUP(tooFarPopUp)
+    }
+}
+
+@Composable
+fun TooFarPopUP(state: MutableState<Boolean>){
+
+    AlertDialog(
+        modifier = Modifier.clip(RoundedCornerShape(20.dp)),
+        backgroundColor = LightOrange,
+        onDismissRequest = {
+            state.value = false
+        },
+        title = {
+            Column (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(),
+            ){
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "TOO FAR!!",
+                    textAlign = TextAlign.Center
+                )
+            }
+        },
+        text = {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "You're too far, get closer to the location and try again",
+                textAlign = TextAlign.Center
+            )
+        },
+        buttons = {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Button(
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Orange),
+                    onClick = {
+                        state.value = false
+                    }) {
+                    Text(text = "Ok")
+                }
+            }
+        }
+
+    )
 }
