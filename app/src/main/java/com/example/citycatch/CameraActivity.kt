@@ -47,6 +47,7 @@ class CameraActivity : ComponentActivity() {
         val intent = intent
         val lat = intent.getDoubleExtra("marker_lat", 0.0)
         val lon = intent.getDoubleExtra("marker_lon", 0.0)
+        val markerName = intent.getStringExtra("marker_name")
 
         Log.i("TAG INTENT", "$lat $lon")
 
@@ -66,6 +67,8 @@ class CameraActivity : ComponentActivity() {
                 executor = cameraExecutor,
                 sensorsViewModel = svm,
                 firebaseViewModel = fm,
+                mapViewModel = vm,
+                markerName = markerName!!,
                 onError = { Log.e("TAG", "View error:", it) }
             )
         }

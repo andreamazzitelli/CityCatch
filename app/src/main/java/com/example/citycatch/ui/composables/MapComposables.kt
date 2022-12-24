@@ -1,6 +1,7 @@
 package com.example.citycatch.ui.composables
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.location.Location
@@ -111,6 +112,7 @@ fun MarkerClustering(context: Context, vm: MapViewModel, clusterM: ClusterManage
 
     var landmarks: List<Place> = emptyList()
     val lifecycle = LocalLifecycleOwner.current
+    val activity = LocalContext.current as Activity
 
     MapEffect{ map->
 
@@ -158,7 +160,10 @@ fun MarkerClustering(context: Context, vm: MapViewModel, clusterM: ClusterManage
                     val intent = Intent(context, CameraActivity::class.java)
                     intent.putExtra("marker_lat", placeLocation.latitude)
                     intent.putExtra("marker_lon", placeLocation.longitude)
+                    intent.putExtra("marker_name", it.placeName)
                     context.startActivity(intent)
+                    activity.finish()
+
                 }
             }
 

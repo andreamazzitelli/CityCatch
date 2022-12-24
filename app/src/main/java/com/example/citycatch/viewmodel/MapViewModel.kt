@@ -79,10 +79,15 @@ class MapViewModel: ViewModel() {
 
         // TODO gestisci emptylist() dalla chiamata async
         viewModelScope.launch {
-            val reply = async { PlaceRepository().read() }
+            val reply = async { PlaceRepository.read() }
             _landmarks.value = reply.await()
             Log.i("TAG", _landmarks.value.toString())
         }
+    }
+
+    fun reloadPlaces(){
+        Log.i("TAG RELOADING", "Reloading Places")
+        newPosition()
     }
 
 }

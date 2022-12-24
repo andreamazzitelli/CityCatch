@@ -8,6 +8,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.internal.utils.ImageUtil
+import androidx.compose.ui.graphics.ImageBitmap
 import com.example.citycatch.utils.APIs
 import com.example.citycatch.utils.WebAPIs
 import com.google.firebase.auth.FirebaseAuth
@@ -41,12 +42,12 @@ object FirebaseRepository {
     fun getReferenceRDB() = referenceRealDB
 
     private var webAPIs: APIs = WebAPIs().retrofit.create(APIs::class.java)
-
+/*
     @SuppressLint("RestrictedApi")
-    fun addToStorage(user: String, markerName: String, image: ImageProxy): Boolean{
+    fun addToStorage(markerName: String, image: Bitmap){//: Boolean{ //ImageProxy): Boolean{
 
-        val imagesRef = storageReference.child("$user/$markerName.jpg")
-
+        val imagesRef = storageReference.child("${firebaseAuth.currentUser!!.uid}/$markerName.jpg")
+/*
         val byteArray = ImageUtil.yuvImageToJpegByteArray(
             image,
             null, //Rect(0, 0, image.width, image.height),
@@ -61,21 +62,35 @@ object FirebaseRepository {
         flipped.compress(Bitmap.CompressFormat.JPEG, 100, stream)
         val imageBytes = stream.toByteArray()
 
+ */
+
+        val stream = ByteArrayOutputStream()
+        image.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+        val imageBytes = stream.toByteArray()
+
 
         val metadata = storageMetadata {
             contentType = "image/jpg"
-            setCustomMetadata("Location Name", "")
+            setCustomMetadata("Location Name", markerName)
             setCustomMetadata("Latitude", "")
             setCustomMetadata("Longitude", "")
             setCustomMetadata("time", "")
-            setCustomMetadata("user", "")
+            setCustomMetadata("user", firebaseAuth.currentUser!!.email)
 
         }
 
         val uploadTask = imagesRef.putBytes(imageBytes, metadata)
-
+            .addOnCompleteListener{
+            if (it.isSuccessful){
+                Log.i("TAG IMAGE LIST", "Success")
+            }else{
+                Log.i("TAG IMAGE LIST", "Failed")
+            }
+                return@addOnCompleteListener
+            }
+/*
         if(!uploadTask.isSuccessful)return false
-        return true
+        return true*/
         /*
     .addOnFailureListener{
         Log.i("TAG UPLOAD ERR", "$it")
@@ -87,6 +102,7 @@ object FirebaseRepository {
          */
 
     }
+    */
     fun addProfileToStorage(imageUri: Uri){
         val imageRef = storageReference.child("${firebaseAuth.currentUser!!.uid}/profile.jpg")
         //val file = File(imageUri.path)

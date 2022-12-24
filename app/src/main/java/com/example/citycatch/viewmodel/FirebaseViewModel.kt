@@ -47,8 +47,8 @@ class FirebaseViewModel : ViewModel() {
 
     private val orderedScores = FirebaseRepository.getReferenceRDB().orderByValue()
 
-    private val _imageBitMap: MutableLiveData<ImageBitmap> = MutableLiveData<ImageBitmap>(ImageBitmap(1,1))
-    val imageBitmap: LiveData<ImageBitmap> = _imageBitMap
+    private val _imageBitMap: MutableLiveData<Bitmap> = MutableLiveData<Bitmap>(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
+    val imageBitmap: LiveData<Bitmap> = _imageBitMap
 
     private var updateImage = true
 
@@ -131,7 +131,7 @@ class FirebaseViewModel : ViewModel() {
             val flipped =
                 Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
 
-            _imageBitMap.value = flipped.asImageBitmap()
+            _imageBitMap.value = flipped
         }
     }
 

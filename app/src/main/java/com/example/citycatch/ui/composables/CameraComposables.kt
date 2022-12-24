@@ -2,11 +2,12 @@ package com.example.citycatch.ui.composables
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
@@ -26,15 +27,13 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -47,11 +46,20 @@ import java.util.concurrent.Executor
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import androidx.lifecycle.Observer
+import coil.compose.AsyncImagePainter
+import com.example.citycatch.CameraActivity
+import com.example.citycatch.MapsActivity
 import com.example.citycatch.R
+import com.example.citycatch.data.FirebaseRepository
+import com.example.citycatch.data.PlaceRepository
 import com.example.citycatch.ui.theme.Green
 import com.example.citycatch.ui.theme.LightOrange
+import com.example.citycatch.ui.theme.Orange
 import com.example.citycatch.ui.theme.Red
 import com.example.citycatch.viewmodel.FirebaseViewModel
+import com.example.citycatch.viewmodel.MapViewModel
+import com.google.firebase.storage.ktx.storageMetadata
+import java.io.ByteArrayOutputStream
 
 
 @SuppressLint("UnsafeOptInUsageError", "RestrictedApi")
@@ -60,6 +68,8 @@ fun CameraView(
     executor: Executor,
     sensorsViewModel: SensorViewModel,
     firebaseViewModel: FirebaseViewModel,
+    mapViewModel: MapViewModel,
+    markerName: String,
     onError: (ImageCaptureException) -> Unit
 ){
 
@@ -71,8 +81,15 @@ fun CameraView(
         mutableStateOf(false)
     }
 
+    val success = remember {
+        mutableStateOf(false)
+    }
+    val failure = remember {
+        mutableStateOf(false)
+    }
 
-    val image = firebaseViewModel.imageBitmap.observeAsState()
+
+    val imageBitmap = firebaseViewModel.imageBitmap.observeAsState()
 
     val lensFacing = CameraSelector.LENS_FACING_BACK
 
@@ -196,13 +213,138 @@ fun CameraView(
 
     if(popUp.value){
         Log.i("IMAGE", "PopU")
-        PopUp(popUp, image.value!!, firebaseViewModel)
+        PopUp(popUp, success, failure, imageBitmap.value!!, firebaseViewModel, markerName)
+    }
+
+    if(success.value){
+        popUp.value = false
+        SuccessPopUp(success, mapViewModel)
+    }
+
+    if(failure.value){
+        popUp.value = false
+        FailurePopUp(failure)
     }
 
 }
 
 @Composable
-fun PopUp(state: MutableState<Boolean>, image: ImageBitmap, fm:FirebaseViewModel){
+fun SuccessPopUp(state: MutableState<Boolean>, vm: MapViewModel){
+
+    val context = LocalContext.current
+
+    AlertDialog(
+        modifier = Modifier.clip(RoundedCornerShape(20.dp)),
+        backgroundColor = LightOrange,
+        onDismissRequest = {
+            state.value = false
+            vm.reloadPlaces()
+            val intent = Intent(context, MapsActivity::class.java)
+            context.startActivity(intent)
+        },
+        title = {
+            Column (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(),
+            ){
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "SUCCESS",
+                    textAlign = TextAlign.Center
+                )
+            }
+        },
+        text = {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "Image Saved Correctly",
+                textAlign = TextAlign.Center
+            )
+            //TODO call to reload images in user page
+               },
+        buttons = {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Button(
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Green),
+                    onClick = {
+                        //TODO go back to map and reload places
+                        vm.reloadPlaces()
+                        val intent = Intent(context, MapsActivity::class.java)
+                        context.startActivity(intent)
+
+
+                    }) {
+                    Text(text = "Go Back To Map")
+                }
+            }
+        }
+
+    )
+
+}
+
+@Composable
+fun FailurePopUp(state: MutableState<Boolean>){
+
+
+    AlertDialog(
+        modifier = Modifier.clip(RoundedCornerShape(20.dp)),
+        backgroundColor = LightOrange,
+        onDismissRequest = {
+            state.value = false
+        },
+        title = {
+            Column (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(),
+            ){
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "SOMETHING WENT WRONG :(",
+                    textAlign = TextAlign.Center
+                )
+            }
+        },
+        text = {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "Something Prevented the Imge from Correctly being Saved",
+                textAlign = TextAlign.Center
+            )
+        },
+        buttons = {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Button(
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Orange),
+                    onClick = {
+                        state.value = false
+                    }) {
+                    Text(text = "Take New Photo")
+                }
+            }
+        }
+
+    )
+
+
+}
+
+@Composable
+fun PopUp(
+    state: MutableState<Boolean>,
+    stateSuccess: MutableState<Boolean>,
+    stateFailure: MutableState<Boolean>,
+    image: Bitmap, fm:FirebaseViewModel,
+    markerName: String
+){
 
     Log.i("TAG IMAGE", "After Turn")
 
@@ -230,7 +372,7 @@ fun PopUp(state: MutableState<Boolean>, image: ImageBitmap, fm:FirebaseViewModel
                 horizontalArrangement = Arrangement.Center
             ) {
                 Image(
-                    bitmap = image,
+                    bitmap = image.asImageBitmap(),
                     contentDescription = ""
                 )
             }
@@ -243,7 +385,43 @@ fun PopUp(state: MutableState<Boolean>, image: ImageBitmap, fm:FirebaseViewModel
             ) {
                 Button(
                     colors = ButtonDefaults.buttonColors(Green),
-                    onClick = { /*TODO*/ }
+                    onClick = {
+
+                        val imagesRef = FirebaseRepository.getStorageReference().child("${FirebaseRepository.getUserUID()}/$markerName.jpg")
+
+                        val stream = ByteArrayOutputStream()
+                        image.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                        val imageBytes = stream.toByteArray()
+
+                        val metadata = storageMetadata {
+                            contentType = "image/jpg"
+                            setCustomMetadata("Location Name", markerName)
+                            setCustomMetadata("Latitude", "")
+                            setCustomMetadata("Longitude", "")
+                            setCustomMetadata("time", "")
+                            setCustomMetadata("user", FirebaseRepository.getUser()!!.email)
+
+                        }
+
+                        val uploadTask = imagesRef.putBytes(imageBytes, metadata)
+                            .addOnCompleteListener{
+                                if(it.isSuccessful){
+                                    //Image Correctly Saved go back to map
+                                    stateSuccess.value = true
+                                    stateFailure.value = false
+                                    PlaceRepository.addVisitedPlace(markerName, FirebaseRepository.getUserUID())
+
+                                }
+                                else{
+                                    //Error Try Again
+                                    stateSuccess.value = false
+                                    stateFailure.value = true
+                                }
+                            }
+
+
+
+                    }
                 ) {
                     Text(text = "Save it!")
                 }

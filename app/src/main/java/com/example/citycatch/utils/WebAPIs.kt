@@ -21,6 +21,9 @@ interface APIs{
 
     @POST("/addUser")
     suspend fun addUser(@Query("mail") mail: String, @Query("id") id: String) : Unit
+
+    @POST("/addVisitedPlace")
+    suspend fun addVisitedPlace(@Query("name")locationName: String, @Query("uid") uid: String): Unit
 }
 
 class WebAPIs {

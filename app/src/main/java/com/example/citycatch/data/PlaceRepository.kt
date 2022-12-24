@@ -4,8 +4,10 @@ import android.util.Log
 import com.example.citycatch.data.model.Place
 import com.example.citycatch.utils.APIs
 import com.example.citycatch.utils.WebAPIs
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
-class PlaceRepository {
+object PlaceRepository {
 
     private var webAPIs: APIs = WebAPIs().retrofit.create(APIs::class.java)
 
@@ -19,4 +21,20 @@ class PlaceRepository {
             emptyList()
         }
     }
+
+    fun addVisitedPlace(locationName: String, uid: String){
+        try {
+            runBlocking {
+                launch {
+                    webAPIs.addVisitedPlace(locationName, uid)
+                    Log.i("TAG UPDATE", "Updating")
+                }
+            }
+
+        }
+        catch (e: Exception){
+            Log.i("TAG FAIL", "Failed to Add Visited Place")
+        }
+    }
+
 }
