@@ -7,8 +7,6 @@ import android.graphics.Matrix
 import android.util.Log
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.internal.utils.ImageUtil
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,8 +17,6 @@ import com.example.citycatch.data.model.UserScore
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 
 class FirebaseViewModel : ViewModel() {
 
@@ -99,6 +95,13 @@ class FirebaseViewModel : ViewModel() {
 
         FirebaseRepository.getStorageReference().child(FirebaseRepository.getUserUID())
             .listAll().addOnSuccessListener { list ->
+
+                list.items.sortBy {
+                    it.name.split("-")[0]
+                }
+                list.items.reverse()
+
+                Log.i("TAG TEST", list.items[0].name)
 
                 _photoNumber.value = list.items.size - 1
 

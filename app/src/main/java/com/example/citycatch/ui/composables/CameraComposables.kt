@@ -271,7 +271,6 @@ fun SuccessPopUp(state: MutableState<Boolean>, vm: MapViewModel){
                 Button(
                     colors = ButtonDefaults.buttonColors(backgroundColor = Green),
                     onClick = {
-                        //TODO go back to map and reload places
                         vm.reloadPlaces()
                         val intent = Intent(context, MapsActivity::class.java)
                         context.startActivity(intent)
@@ -386,7 +385,8 @@ fun PopUp(
                     colors = ButtonDefaults.buttonColors(Green),
                     onClick = {
 
-                        val imagesRef = FirebaseRepository.getStorageReference().child("${FirebaseRepository.getUserUID()}/$markerName.jpg")
+                        val time = System.currentTimeMillis().toString()
+                        val imagesRef = FirebaseRepository.getStorageReference().child("${FirebaseRepository.getUserUID()}/$time-$markerName.jpg")
 
                         val stream = ByteArrayOutputStream()
                         image.compress(Bitmap.CompressFormat.JPEG, 100, stream)
@@ -397,7 +397,7 @@ fun PopUp(
                             setCustomMetadata("Location Name", markerName)
                             setCustomMetadata("Latitude", "")
                             setCustomMetadata("Longitude", "")
-                            setCustomMetadata("time", "")
+                            setCustomMetadata("time", time)
                             setCustomMetadata("user", FirebaseRepository.getUser()!!.email)
 
                         }
