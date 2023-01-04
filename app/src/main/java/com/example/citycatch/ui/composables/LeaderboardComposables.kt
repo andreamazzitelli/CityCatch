@@ -1,19 +1,13 @@
 package com.example.citycatch.ui.composables
 
-import android.icu.text.ListFormatter.Width
-import android.util.Log
+
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
@@ -24,10 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,7 +26,6 @@ import com.example.citycatch.R
 import com.example.citycatch.data.FirebaseRepository
 import com.example.citycatch.data.model.UserScore
 import com.example.citycatch.ui.theme.LightOrange
-import com.example.citycatch.ui.theme.Orange
 import com.example.citycatch.viewmodel.FirebaseViewModel
 import kotlinx.coroutines.launch
 
@@ -95,7 +85,7 @@ fun Leaderboard(vm: FirebaseViewModel) {
                 content = {
                     var user = 0
                     itemsIndexed(userScores.value!!) { i, el ->
-                        Log.i("TAG COL", "Here")
+                        //Log.i("TAG COL", "Here")
                         LeaderboardEntry(i, el, maxWidth)
                         if (el.mail == FirebaseRepository.getUser()!!.email) {
                             user = i

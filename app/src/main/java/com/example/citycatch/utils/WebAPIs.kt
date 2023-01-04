@@ -13,17 +13,17 @@ import retrofit2.http.Query
 
 interface APIs{
 
-    @GET("/places")
-    suspend fun getPlaces() : Response<List<Place>>
+    //@GET("/places")
+    //suspend fun getPlaces() : Response<List<Place>>
 
     @GET("/places/{uid}")
     suspend fun getPlacesUser(@Path("uid")userUid: String) : Response<List<Place>>
 
     @POST("/addUser")
-    suspend fun addUser(@Query("mail") mail: String, @Query("id") id: String) : Unit
+    suspend fun addUser(@Query("mail") mail: String, @Query("id") id: String)
 
     @POST("/addVisitedPlace")
-    suspend fun addVisitedPlace(@Query("name")locationName: String, @Query("uid") uid: String): Unit
+    suspend fun addVisitedPlace(@Query("name")locationName: String, @Query("uid") uid: String)
 }
 
 class WebAPIs {

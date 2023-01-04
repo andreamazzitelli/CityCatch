@@ -56,7 +56,6 @@ class FirebaseViewModel : ViewModel() {
 
         orderedScores.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.i("TAG", "Test")
                 var temp = mutableListOf<UserScore>()
                 var value = snapshot.getValue().toString()
                 value = value.substring(1, value.length - 1)
@@ -77,8 +76,8 @@ class FirebaseViewModel : ViewModel() {
 
                 _userScores.value = temp
 
-                Log.d("TAG", "Value is: " + value)
-                Log.d("TAG", temp.toString())
+                //Log.d("TAG", "Value is: " + value)
+                //Log.d("TAG", temp.toString())
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -112,7 +111,7 @@ class FirebaseViewModel : ViewModel() {
 
                             if (!_photoList.value!!.contains(uri.toString())) {
                                 _photoList.value!!.add(uri.toString())
-                                Log.i("TAG URI", uri.toString())
+                                //Log.i("TAG URI", uri.toString())
                             }
                         }
                     }
@@ -125,7 +124,7 @@ class FirebaseViewModel : ViewModel() {
 
 
         if(updateImage){
-            Log.i("TAG IMAGE SET", "Setting")
+            //Log.i("TAG IMAGE SET", "Setting")
             val byteArray = ImageUtil.yuvImageToJpegByteArray(imageProxy, null, 100)
 
             val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)

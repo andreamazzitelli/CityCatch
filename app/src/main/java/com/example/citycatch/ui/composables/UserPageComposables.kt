@@ -3,7 +3,6 @@ package com.example.citycatch.ui.composables
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
@@ -196,7 +195,7 @@ fun ImageBlock(vm: FirebaseViewModel){
             modifier = Modifier.wrapContentSize()
         ) {
             itemsIndexed(urlList.value!!){ _, el ->
-                Log.i("TAG IDEX", el)
+                //Log.i("TAG IDEX", el)
                 RowElement(link = el)
             }
         }

@@ -6,9 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.location.Location
-import android.util.Log
-import android.widget.Space
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -25,9 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Observer
 import com.example.citycatch.CameraActivity
@@ -130,7 +125,6 @@ fun MarkerClustering(context: Context, vm: MapViewModel, clusterM: ClusterManage
 
     var landmarks: List<Place> = emptyList()
     val lifecycle = LocalLifecycleOwner.current
-    val activity = LocalContext.current as Activity
 
     val tooFarPopUp = remember {
         mutableStateOf(false)
@@ -144,9 +138,9 @@ fun MarkerClustering(context: Context, vm: MapViewModel, clusterM: ClusterManage
         }
 
         vm.landmarks.observe(lifecycle, Observer{
-            Log.i("TAG PLACES", "Observing")
+            //Log.i("TAG PLACES", "Observing")
             if(it.isNotEmpty()) {
-                Log.i("TAG PLACES", "Not Empty")
+                //Log.i("TAG PLACES", "Not Empty")
                 landmarks = it
                 clusterManager!!.addItems(landmarks)
             }
@@ -175,11 +169,11 @@ fun MarkerClustering(context: Context, vm: MapViewModel, clusterM: ClusterManage
                 if(distance > 500){
                     //Toast.makeText(context, "TOO FAR", Toast.LENGTH_LONG).show()
                     tooFarPopUp.value = true
-                    Log.i("TAG BAD", "$distance")
+                    //Log.i("TAG BAD", "$distance")
                 }
                 else {
                     //Toast.makeText(context, "OK", Toast.LENGTH_LONG).show()
-                    Log.i("TAG OK", "$distance")
+                    //Log.i("TAG OK", "$distance")
                     val intent = Intent(context, CameraActivity::class.java)
                     intent.putExtra("marker_lat", placeLocation.latitude)
                     intent.putExtra("marker_lon", placeLocation.longitude)
@@ -192,7 +186,7 @@ fun MarkerClustering(context: Context, vm: MapViewModel, clusterM: ClusterManage
         }
 
         clusterManager!!.setOnClusterClickListener { cluster ->
-            Log.i("TAG C", "Clicked")
+            //Log.i("TAG C", "Clicked")
             val builder = LatLngBounds.Builder()
             for(place in cluster.items){
                 builder.include(LatLng(place.lat.toDouble(), place.lon.toDouble()))
@@ -294,7 +288,7 @@ fun ErrorPopUp(){
             val bitmap = BitmapFactory.decodeStream(image)
             image.close()
 
-            Column() {
+            Column {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = "To work properly this app needs PRECISE LOCATION, please give us the required permission by going Settings->Apps->CityCatch->Permissions or select the following",

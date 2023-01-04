@@ -65,7 +65,7 @@ fun BottomNavigation(navController: NavController){
         BottomNavItem.User
     )
 
-    androidx.compose.material.BottomNavigation(
+    BottomNavigation(
         modifier = Modifier.wrapContentSize(),
         backgroundColor = Orange,
         contentColor = Color.Black

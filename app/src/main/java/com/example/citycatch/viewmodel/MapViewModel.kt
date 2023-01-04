@@ -54,10 +54,10 @@ class MapViewModel: ViewModel() {
 
     @SuppressLint("MissingPermission")
     fun startLocalization(fl: FusedLocationProviderClient){
-        Log.i("TAG", "Starting Loc")
+        //Log.i("TAG", "Starting Loc")
 
         if(!active) {
-            Log.i("TAG", "Not Active")
+            //Log.i("TAG", "Not Active")
             active = true
             fusedLocationClient = fl
             fusedLocationClient!!.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
@@ -66,7 +66,7 @@ class MapViewModel: ViewModel() {
     }
 
     fun stopLocalization(){
-        Log.i("TAG", "Stop Loc")
+        //Log.i("TAG", "Stop Loc")
         if(fusedLocationClient!=null){
             fusedLocationClient!!.removeLocationUpdates(locationCallback)
             active = false
@@ -75,9 +75,9 @@ class MapViewModel: ViewModel() {
 
     private fun newPosition(){
 
-        Log.i("TAG", "New Position")
+        //Log.i("TAG", "New Position")
 
-        // TODO gestisci emptylist() dalla chiamata async
+        // TODO handle emptylist() from async call
         viewModelScope.launch {
             val reply = async { PlaceRepository.read() }
             _landmarks.value = reply.await()
@@ -86,7 +86,7 @@ class MapViewModel: ViewModel() {
     }
 
     fun reloadPlaces(){
-        Log.i("TAG RELOADING", "Reloading Places")
+        //Log.i("TAG RELOADING", "Reloading Places")
         newPosition()
     }
 

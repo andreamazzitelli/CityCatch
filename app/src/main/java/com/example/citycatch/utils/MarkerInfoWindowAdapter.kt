@@ -21,7 +21,7 @@ class MarkerInfoWindowAdapter(private val context: Context) : GoogleMap.InfoWind
             R.id.text_view_title
         ).text = place.placeName
 
-        var button = view.findViewById<Button>(R.id.button)
+        val button = view.findViewById<Button>(R.id.button)
 
         if (place.seen) {
             button.text = "GOT IT!"

@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.util.Log
 import android.view.animation.OvershootInterpolator
 import android.widget.Toast
 
@@ -220,8 +219,8 @@ fun LoginPage(navController: NavHostController) {
                         FirebaseRepository.getAuthInstance().signInWithEmailAndPassword(email, passwordP)
                             .addOnSuccessListener {
 
-                                Log.i("TAG LOGIN", FirebaseRepository.getUserUID())
-                                Log.i("TAG LOGIN", FirebaseRepository.getUser()!!.email.toString())
+                                //Log.i("TAG LOGIN", FirebaseRepository.getUserUID())
+                                //Log.i("TAG LOGIN", FirebaseRepository.getUser()!!.email.toString())
 
                                 val intent = Intent(context, MapsActivity::class.java)
                                 context.startActivity(intent)
@@ -229,12 +228,12 @@ fun LoginPage(navController: NavHostController) {
                             }
                             .addOnFailureListener {
                                 Toast.makeText(context, "ERROR: ${it.message!!.split(".")[0]}", Toast.LENGTH_LONG).show()
-                                Log.i("TAG LOGIN", it.message.toString())
+                                //Log.i("TAG LOGIN", it.message.toString())
                             }
 
                     }else{
                         Toast.makeText(context, "EMPTY FIELDS NOT ALLOWED", Toast.LENGTH_LONG).show()
-                        Log.i("TAG LOGIN", "Empty Fields Are not Allowed !!")
+                        //Log.i("TAG LOGIN", "Empty Fields Are not Allowed !!")
                     }
 
                 },
@@ -351,8 +350,8 @@ fun RegistrationPage(navController: NavHostController){
                         if(passwordL == confirmPasswordL){
                             FirebaseRepository.getAuthInstance().createUserWithEmailAndPassword(email, passwordL)
                                 .addOnSuccessListener {
-                                    Log.i("TAG REGISTER", "Registered Successful")
-                                    Log.i("TAG REGISTER", FirebaseRepository.getUser()!!.email.toString())
+                                    //Log.i("TAG REGISTER", "Registered Successful")
+                                    //Log.i("TAG REGISTER", FirebaseRepository.getUser()!!.email.toString())
 
                                     FirebaseRepository.addUserToDB()
 
@@ -372,7 +371,7 @@ fun RegistrationPage(navController: NavHostController){
                                 }
                                 .addOnFailureListener {
                                     Toast.makeText(context, "ERROR: ${it.message!!.split(".")[0]}", Toast.LENGTH_LONG).show()
-                                    Log.i("TAG REGISTER", it.message.toString())
+                                    //Log.i("TAG REGISTER", it.message.toString())
                                 }
                         }
                         else{
@@ -381,7 +380,7 @@ fun RegistrationPage(navController: NavHostController){
 
                     }else{
                         Toast.makeText(context, "EMPTY FIELDS NOT ALLOWED", Toast.LENGTH_LONG).show()
-                        Log.i("TAG REGISTER", "Empty Fields")
+                        //Log.i("TAG REGISTER", "Empty Fields")
                     }
 
                 },

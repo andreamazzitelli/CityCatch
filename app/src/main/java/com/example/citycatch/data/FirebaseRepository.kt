@@ -1,24 +1,15 @@
 package com.example.citycatch.data
 
-import android.annotation.SuppressLint
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
 import android.net.Uri
 import android.util.Log
-import androidx.camera.core.ImageProxy
-import androidx.camera.core.internal.utils.ImageUtil
-import androidx.compose.ui.graphics.ImageBitmap
 import com.example.citycatch.utils.APIs
 import com.example.citycatch.utils.WebAPIs
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import com.google.firebase.storage.ktx.storageMetadata
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.io.ByteArrayOutputStream
 
 
 object FirebaseRepository {
@@ -118,11 +109,11 @@ object FirebaseRepository {
             runBlocking {
                 launch {
 
-                    Log.i("TAG USER", firebaseAuth.currentUser!!.email.toString())
-                    Log.i("TAG USER", firebaseAuth.currentUser!!.uid)
+                    //Log.i("TAG USER", firebaseAuth.currentUser!!.email.toString())
+                    //Log.i("TAG USER", firebaseAuth.currentUser!!.uid)
 
                     webAPIs.addUser(firebaseAuth.currentUser!!.email.toString(), firebaseAuth.currentUser!!.uid)
-                    Log.i("TAG USER", "Success")
+                    //Log.i("TAG USER", "Success")
                 }
             }
 

@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
@@ -48,14 +47,11 @@ import java.util.concurrent.Executor
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import androidx.lifecycle.Observer
-import coil.compose.AsyncImagePainter
-import com.example.citycatch.CameraActivity
 import com.example.citycatch.MapsActivity
 import com.example.citycatch.R
 import com.example.citycatch.data.FirebaseRepository
 import com.example.citycatch.data.PlaceRepository
 import com.example.citycatch.ui.theme.Green
-import com.example.citycatch.ui.theme.LightOrange
 import com.example.citycatch.ui.theme.Orange
 import com.example.citycatch.ui.theme.Red
 import com.example.citycatch.viewmodel.FirebaseViewModel
@@ -172,7 +168,7 @@ fun CameraView(
             IconButton(
                 modifier = Modifier.padding(bottom = 20.dp),
                 onClick = {
-                    Log.i("TAG IMAGE", "Set to True")
+                    //Log.i("TAG IMAGE", "Set to True")
                     firebaseViewModel.updateImageChangeState()
                     popUp.value = true
                 },
@@ -214,7 +210,7 @@ fun CameraView(
     Pointer(sensorsViewModel)
 
     if(popUp.value){
-        Log.i("IMAGE", "PopU")
+        //Log.i("IMAGE", "PopU")
         PopUp(popUp, success, failure, imageBitmap.value!!, firebaseViewModel, markerName)
     }
 
@@ -346,7 +342,7 @@ fun PopUp(
     markerName: String
 ){
 
-    Log.i("TAG IMAGE", "After Turn")
+    //Log.i("TAG IMAGE", "After Turn")
 
     AlertDialog(
         modifier = Modifier.clip(RoundedCornerShape(20.dp)),
@@ -451,7 +447,7 @@ fun Pointer(sensorsViewModel: SensorViewModel){
 
 
     sensorsViewModel.direction.observe(LocalLifecycleOwner.current, Observer {
-        Log.i("TAG OB", it.toString())
+        //Log.i("TAG OB", it.toString())
         when(it){
             sensorsViewModel.CENTER_TAG -> angle = 0.0f
             sensorsViewModel.LEFT_TAG -> angle = -90.0f
@@ -498,7 +494,6 @@ fun OverlayGraphics(color: Color){
 @Composable
 fun ErrorCameraPopUp(){
 
-    val context = LocalContext.current
     val activity = LocalContext.current as Activity
 
     AlertDialog(

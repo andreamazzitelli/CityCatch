@@ -5,8 +5,6 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener2
 import android.hardware.SensorManager
 import android.location.Location
-import android.util.Log
-import androidx.activity.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -45,8 +43,7 @@ class SensorViewModel: ViewModel(), SensorEventListener2 {
 
     fun setUserLocation(loc: Location){
        userLocation = loc
-        Log.i("TAG SVM LOC", userLocation.toString())
-        //
+        //Log.i("TAG SVM LOC", userLocation.toString())
     }
     fun setMarkerLocation(lat: Double, lon: Double){
         markerLocation.latitude = lat
@@ -90,7 +87,7 @@ class SensorViewModel: ViewModel(), SensorEventListener2 {
         }
         turnDirection*=-1
 
-        Log.i("TAG", "$roll")
+        //Log.i("TAG", "$roll")
 
         if(turnDirection > 20.0f){
             _direction.value = RIGHT_TAG
