@@ -73,6 +73,7 @@ class FirebaseViewModel : ViewModel() {
 
                 }
                 temp.sortBy { it.score }
+                temp.reverse()
 
                 _userScores.value = temp
 
@@ -100,8 +101,6 @@ class FirebaseViewModel : ViewModel() {
                     it.name.split("-")[0]
                 }
                 list.items.reverse()
-
-                Log.i("TAG TEST", list.items[0].name)
 
                 _photoNumber.value = list.items.size - 1
 
