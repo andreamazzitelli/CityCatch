@@ -371,11 +371,13 @@ fun RegistrationPage(navController: NavHostController){
                                     activity!!.finish()
                                 }
                                 .addOnFailureListener {
+                                    Toast.makeText(context, "ERROR: ${it.message!!.split(".")[0]}", Toast.LENGTH_LONG).show()
                                     Log.i("TAG REGISTER", it.message.toString())
                                 }
                         }
 
                     }else{
+                        Toast.makeText(context, "EMPTY FIELDS NOT ALLOWED", Toast.LENGTH_LONG)
                         Log.i("TAG REGISTER", "Empty Fields")
                     }
 
