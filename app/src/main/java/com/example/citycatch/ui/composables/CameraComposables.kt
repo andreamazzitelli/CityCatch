@@ -1,9 +1,11 @@
 package com.example.citycatch.ui.composables
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
@@ -489,6 +491,67 @@ fun OverlayGraphics(color: Color){
         )
 
     }
+
+}
+
+
+@Composable
+fun ErrorCameraPopUp(){
+
+    val context = LocalContext.current
+    val activity = LocalContext.current as Activity
+
+    AlertDialog(
+        modifier = Modifier.clip(RoundedCornerShape(20.dp)),
+        backgroundColor = Color.White,
+        onDismissRequest = {},
+        title = {
+            Column (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(),
+            ){
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "PERMISSION NOT GRANTED",
+                    textAlign = TextAlign.Center
+                )
+            }
+        },
+        text = {
+
+            Column() {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "To work properly this app needs the CAMERA, please give us the required permission by going Settings->Apps->CityCatch->Permissions",
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(30.dp))
+                Image(
+                    modifier= Modifier.fillMaxWidth().size(1000.dp, 100.dp),
+                    painter = painterResource(id = R.drawable.camera),
+                    contentDescription = ""
+                )
+            }
+
+        },
+        buttons = {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Button(
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Orange),
+                    onClick = {
+                        activity.finish()
+                    }) {
+                    Text(text = "Back to Map")
+                }
+            }
+        }
+
+    )
+
 
 }
 

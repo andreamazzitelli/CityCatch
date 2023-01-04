@@ -16,6 +16,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.example.citycatch.ui.composables.CameraView
+import com.example.citycatch.ui.composables.ErrorCameraPopUp
 import com.example.citycatch.viewmodel.FirebaseViewModel
 import com.example.citycatch.viewmodel.MapViewModel
 import com.example.citycatch.viewmodel.SensorViewModel
@@ -28,12 +29,24 @@ class CameraActivity : ComponentActivity() {
     private val svm: SensorViewModel by viewModels {SensorViewModel.Factory}
     private val vm: MapViewModel by viewModels { MapViewModel.Factory}
     private val fm: FirebaseViewModel by viewModels { FirebaseViewModel.Factory }
+    private var markerName: String? = ""
 
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
+                setContent {
+                    CameraView(
+                        executor = cameraExecutor,
+                        sensorsViewModel = svm,
+                        firebaseViewModel = fm,
+                        mapViewModel = vm,
+                        markerName = markerName!!,
+                        onError = { Log.e("TAG", "View error:", it) }
+                    )
+                }
                 Log.i("TAG", "Permission granted")
             } else {
+                setContent { ErrorCameraPopUp() }
                 Log.i("TAG", "Permission denied")
             }
         }
@@ -47,7 +60,7 @@ class CameraActivity : ComponentActivity() {
         val intent = intent
         val lat = intent.getDoubleExtra("marker_lat", 0.0)
         val lon = intent.getDoubleExtra("marker_lon", 0.0)
-        val markerName = intent.getStringExtra("marker_name")
+        markerName = intent.getStringExtra("marker_name")
 
         Log.i("TAG INTENT", "$lat $lon")
 
@@ -88,8 +101,15 @@ class CameraActivity : ComponentActivity() {
             }
 
             ActivityCompat.shouldShowRequestPermissionRationale(this,
-                Manifest.permission.CAMERA) -> Log.i("TAG", "Show camera permissions dialog")
-
+                Manifest.permission.CAMERA) -> {
+                Log.i("TAG", "Show camera permissions dialog")
+                when{
+                    ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED->{
+                            setContent { ErrorCameraPopUp() }
+                        }
+                }
+            }
             else -> requestPermissionLauncher.launch(Manifest.permission.CAMERA)
         }
     }

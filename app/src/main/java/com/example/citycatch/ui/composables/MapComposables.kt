@@ -4,9 +4,13 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.location.Location
 import android.util.Log
+import android.widget.Space
 import android.widget.Toast
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
@@ -17,8 +21,11 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -178,7 +185,6 @@ fun MarkerClustering(context: Context, vm: MapViewModel, clusterM: ClusterManage
                     intent.putExtra("marker_lon", placeLocation.longitude)
                     intent.putExtra("marker_name", it.placeName)
                     context.startActivity(intent)
-                    activity.finish()
 
                 }
             }
@@ -257,4 +263,70 @@ fun TooFarPopUP(state: MutableState<Boolean>){
         }
 
     )
+}
+
+@Composable
+fun ErrorPopUp(){
+
+    val context = LocalContext.current
+    val activity = LocalContext.current as Activity
+
+    AlertDialog(
+        modifier = Modifier.clip(RoundedCornerShape(20.dp)),
+        backgroundColor = Color.White,
+        onDismissRequest = {},
+        title = {
+            Column (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(),
+            ){
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "PERMISSION NOT GRANTED",
+                    textAlign = TextAlign.Center
+                )
+            }
+        },
+        text = {
+
+            val image = context.assets.open("permissions.png")
+            val bitmap = BitmapFactory.decodeStream(image)
+            image.close()
+
+            Column() {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "To work properly this app needs PRECISE LOCATION, please give us the required permission by going Settings->Apps->CityCatch->Permissions or select the following",
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Image(
+                    modifier= Modifier
+                        .fillMaxWidth()
+                        .border(2.dp, LightOrange),
+                    bitmap = bitmap.asImageBitmap(),
+                    contentDescription = ""
+                )
+            }
+
+        },
+        buttons = {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Button(
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Orange),
+                    onClick = {
+                        activity.finish()
+                    }) {
+                    Text(text = "Close Application")
+                }
+            }
+        }
+
+    )
+
+
 }

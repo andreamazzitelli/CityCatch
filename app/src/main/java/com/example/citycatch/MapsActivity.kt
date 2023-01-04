@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.citycatch.ui.composables.ErrorPopUp
 import com.example.citycatch.ui.composables.MainScreen
 import com.example.citycatch.viewmodel.FirebaseViewModel
 import com.example.citycatch.viewmodel.MapViewModel
@@ -28,6 +29,7 @@ class MapsActivity: ComponentActivity(){
                 }
             }
             else{
+                setContent { ErrorPopUp() }
                 Log.i("TAG PERMISSION", "Denied")
             }
         }
@@ -124,7 +126,33 @@ class MapsActivity: ComponentActivity(){
                 }
 
             ActivityCompat.shouldShowRequestPermissionRationale(this,
-            Manifest.permission.ACCESS_FINE_LOCATION) -> Log.i("TAG PERMISSION", "Show Localization Permission Dialog")
+                Manifest.permission.ACCESS_FINE_LOCATION) -> {
+                Log.i("TAG PERMISSION", "Show Localization Permission Dialog")
+
+                when{
+                    (ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED )
+                            && (ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)->{
+                        Log.i("TAG PERM", "NOT FINE")
+                            setContent { ErrorPopUp() }
+                        }
+                    (ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED )->{
+                            Log.i("TAG PERM", "NOT COARSE")
+                        setContent { ErrorPopUp() }
+                        }
+
+                    else -> {
+                        vm.startLocalization(LocationServices.getFusedLocationProviderClient(this))
+                        setContent{
+                            MainScreen(vm = vm, fm = fm)
+                        }
+                    }
+
+                }
+
+            }
 
             else -> requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }

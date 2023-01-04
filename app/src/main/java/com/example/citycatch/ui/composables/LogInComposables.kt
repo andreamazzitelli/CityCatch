@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
 import android.view.animation.OvershootInterpolator
+import android.widget.Toast
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
@@ -170,6 +171,7 @@ fun LoginPage(navController: NavHostController) {
         val password = remember { mutableStateOf(TextFieldValue()) }
         var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
+        var errorStatus = ""
         val colorProperties = TextFieldDefaults.outlinedTextFieldColors(
             textColor =  LocalContentColor.current.copy(LocalContentAlpha.current),
             backgroundColor = MaterialTheme.colors.onSurface.copy(alpha = TextFieldDefaults.BackgroundOpacity),
@@ -226,10 +228,12 @@ fun LoginPage(navController: NavHostController) {
                                 activity!!.finish()
                             }
                             .addOnFailureListener {
+                                Toast.makeText(context, "ERROR: ${it.message!!.split(".")[0]}", Toast.LENGTH_LONG).show()
                                 Log.i("TAG LOGIN", it.message.toString())
                             }
 
                     }else{
+                        Toast.makeText(context, "EMPTY FIELDS NOT ALLOWED", Toast.LENGTH_LONG).show()
                         Log.i("TAG LOGIN", "Empty Fields Are not Allowed !!")
                     }
 
