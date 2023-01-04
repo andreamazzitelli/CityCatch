@@ -223,7 +223,7 @@ fun TooFarPopUP(state: MutableState<Boolean>){
 
     AlertDialog(
         modifier = Modifier.clip(RoundedCornerShape(20.dp)),
-        backgroundColor = LightOrange,
+        backgroundColor = Color.White,
         onDismissRequest = {
             state.value = false
         },
