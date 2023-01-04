@@ -375,6 +375,9 @@ fun RegistrationPage(navController: NavHostController){
                                     Log.i("TAG REGISTER", it.message.toString())
                                 }
                         }
+                        else{
+                            Toast.makeText(context, "CONFIRM PASSWORD AND PASSWORD ARE DIFFERENT", Toast.LENGTH_LONG)
+                        }
 
                     }else{
                         Toast.makeText(context, "EMPTY FIELDS NOT ALLOWED", Toast.LENGTH_LONG)
