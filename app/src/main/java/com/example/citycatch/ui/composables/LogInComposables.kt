@@ -376,11 +376,11 @@ fun RegistrationPage(navController: NavHostController){
                                 }
                         }
                         else{
-                            Toast.makeText(context, "CONFIRM PASSWORD AND PASSWORD ARE DIFFERENT", Toast.LENGTH_LONG)
+                            Toast.makeText(context, "CONFIRM PASSWORD AND PASSWORD ARE DIFFERENT", Toast.LENGTH_LONG).show()
                         }
 
                     }else{
-                        Toast.makeText(context, "EMPTY FIELDS NOT ALLOWED", Toast.LENGTH_LONG)
+                        Toast.makeText(context, "EMPTY FIELDS NOT ALLOWED", Toast.LENGTH_LONG).show()
                         Log.i("TAG REGISTER", "Empty Fields")
                     }
 
