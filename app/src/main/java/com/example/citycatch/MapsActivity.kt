@@ -3,6 +3,7 @@ package com.example.citycatch
 import android.Manifest
 import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -19,7 +20,7 @@ import com.google.android.gms.location.LocationServices
 
 class MapsActivity: ComponentActivity(){
 
-    private val requestPermissionLauncher =
+    private val requestPermissionLauncherMap =
         registerForActivityResult(ActivityResultContracts.RequestPermission()){ isGranted ->
             if(isGranted){
                 Log.i("TAG PERMISSION", "Granted")
@@ -27,12 +28,24 @@ class MapsActivity: ComponentActivity(){
                 setContent{
                     MainScreen(vm = vm, fm = fm)
                 }
+                askNotificationPermission()
             }
             else{
                 setContent { ErrorPopUp() }
                 Log.i("TAG PERMISSION", "Denied")
             }
         }
+
+
+    private val requestPermissionLauncherNotification = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            Log.i("TAG PERMISSIONS", "Notification Granted")
+        } else {
+            Log.i("TAG PERMISSIONS", "Notification NOT Granted")
+        }
+    }
 
     private val vm: MapViewModel by viewModels {MapViewModel.Factory}
     private val fm: FirebaseViewModel by viewModels {FirebaseViewModel.Factory}
@@ -65,6 +78,7 @@ class MapsActivity: ComponentActivity(){
         }
         */
         requestLocationPermissions()
+
 
     }
 
@@ -123,6 +137,8 @@ class MapsActivity: ComponentActivity(){
                 setContent{
                     MainScreen(vm = vm, fm = fm)
                 }
+
+                askNotificationPermission()
                 }
 
             ActivityCompat.shouldShowRequestPermissionRationale(this,
@@ -154,8 +170,24 @@ class MapsActivity: ComponentActivity(){
 
             }
 
-            else -> requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            else -> requestPermissionLauncherMap.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
+    }
+
+    private fun askNotificationPermission() {
+
+        when{
+            (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+                    PackageManager.PERMISSION_GRANTED)-> Log.i("TAG PERMISSIONS", "Notification Allowed")
+
+            (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS))->
+                Log.i("TAG PERMISSIONS", "Request Notification")
+
+            else-> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                requestPermissionLauncherNotification.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+
     }
 
 

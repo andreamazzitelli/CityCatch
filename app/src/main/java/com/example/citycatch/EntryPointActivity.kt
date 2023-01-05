@@ -11,14 +11,6 @@ class EntryPointActivity : ComponentActivity() {
         setContent {
             LogInNavigation()
         }
-
-        /*
-        val intent = Intent(this, CameraActivity::class.java)
-        intent.putExtra("marker_lat", "43.2")
-        intent.putExtra("marker_lon", "12.11")
-        intent.putExtra("marker_name", "test")
-        startActivity(intent)
-        */
     }
 }
 
