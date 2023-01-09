@@ -1,6 +1,7 @@
 package com.example.citycatch.ui.composables
 
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,8 +11,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,14 +30,12 @@ import com.example.citycatch.data.FirebaseRepository
 import com.example.citycatch.data.model.UserScore
 import com.example.citycatch.ui.theme.LightOrange
 import com.example.citycatch.viewmodel.FirebaseViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun Leaderboard(vm: FirebaseViewModel) {
 
     val userScores = vm.userScores.observeAsState()
     val listState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
 
     val config = LocalConfiguration.current
     val maxWidth = config.screenWidthDp.dp
@@ -48,7 +49,7 @@ fun Leaderboard(vm: FirebaseViewModel) {
     ){
         Row(
             modifier = Modifier
-                .padding(top= 3.dp)
+                .padding(top = 3.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
@@ -78,37 +79,57 @@ fun Leaderboard(vm: FirebaseViewModel) {
                 .fillMaxHeight()
                 //.border(3.dp, Color.Black)
         ){
+            var user = 0
+            var gotUser = remember {
+                mutableStateOf(false)
+            }
             LazyColumn(
-                //state = listState,
+                state = listState,
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.Center,
                 content = {
-                    var user = 0
+
                     itemsIndexed(userScores.value!!) { i, el ->
                         //Log.i("TAG COL", "Here")
-                        LeaderboardEntry(i, el, maxWidth)
+
                         if (el.mail == FirebaseRepository.getUser()!!.email) {
                             user = i
+                            gotUser.value = true
+                        }else{
+                            gotUser.value = false
                         }
+                        LeaderboardEntry(i, el, maxWidth, gotUser.value)
                     }
-                    coroutineScope.launch {
-                        listState.animateScrollToItem(index = user)
-                    }
-
                 }
             )
+
+            LaunchedEffect(
+                key1 = gotUser.value,
+                block = {
+                    Log.i("TAG SCROLL", "Scrolled")
+                    Log.i("TAG SCROLL", "$user")
+                    listState.animateScrollToItem(index = user)
+                }
+            )
+
         }
     }
 }
 
 @Composable
-fun LeaderboardEntry(index: Int, userScoreData: UserScore, width: Dp) {
+fun LeaderboardEntry(index: Int, userScoreData: UserScore, width: Dp, isUser: Boolean) {
 
     val medal = when(index){
         0 -> R.drawable.gold
         1 -> R.drawable.silver
         2 -> R.drawable.bronze
         else -> R.drawable.user
+    }
+
+    val textStyle = if (isUser) {
+        FontWeight.ExtraBold
+    }else{
+        FontWeight.Normal
     }
 
     Card(
@@ -153,7 +174,8 @@ fun LeaderboardEntry(index: Int, userScoreData: UserScore, width: Dp) {
             Text(
                 modifier = Modifier,
                 text = userScoreData.mail,
-                fontSize = 30.sp
+                fontSize = 30.sp,
+                fontWeight = textStyle
             )
             Spacer(modifier = Modifier.weight(2f))
             Text(
