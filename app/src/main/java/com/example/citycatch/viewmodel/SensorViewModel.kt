@@ -36,7 +36,7 @@ class SensorViewModel: ViewModel(), SensorEventListener2 {
 
     private var bearing = 0.0f
     private var roll = 0.0f
-    private var a = 0.5f
+    private var a = 0.0f
 
     private var markerLocation = Location("")
     private var userLocation = Location("")
