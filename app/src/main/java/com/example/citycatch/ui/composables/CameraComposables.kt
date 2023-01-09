@@ -122,7 +122,7 @@ fun CameraView(
 
                 val labelsText = labels.map {it.text}
 
-                if(labelsText.contains("Statue")) {
+                if(labelsText.contains("Statue") || labelsText.contains("Monument")) {
                     firebaseViewModel.setImageBitmap(it)
                     check = true
                 }
