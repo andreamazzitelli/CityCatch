@@ -230,6 +230,7 @@ fun CameraView(
 fun SuccessPopUp(state: MutableState<Boolean>, vm: MapViewModel){
 
     val context = LocalContext.current
+    val activity = LocalContext.current as Activity
 
     AlertDialog(
         modifier = Modifier.clip(RoundedCornerShape(20.dp)),
@@ -239,6 +240,7 @@ fun SuccessPopUp(state: MutableState<Boolean>, vm: MapViewModel){
             vm.reloadPlaces()
             val intent = Intent(context, MapsActivity::class.java)
             context.startActivity(intent)
+            activity.finish()
         },
         title = {
             Column (
@@ -259,7 +261,6 @@ fun SuccessPopUp(state: MutableState<Boolean>, vm: MapViewModel){
                 text = "Image Saved Correctly",
                 textAlign = TextAlign.Center
             )
-            //TODO call to reload images in user page
                },
         buttons = {
             Row(
@@ -272,7 +273,7 @@ fun SuccessPopUp(state: MutableState<Boolean>, vm: MapViewModel){
                         vm.reloadPlaces()
                         val intent = Intent(context, MapsActivity::class.java)
                         context.startActivity(intent)
-
+                        activity.finish()
 
                     }) {
                     Text(text = "Go Back To Map")
@@ -390,11 +391,9 @@ fun PopUp(
                         image.compress(Bitmap.CompressFormat.JPEG, 100, stream)
                         val imageBytes = stream.toByteArray()
 
-                        val metadata = storageMetadata { //TODO add info here
+                        val metadata = storageMetadata {
                             contentType = "image/jpg"
                             setCustomMetadata("Location Name", markerName)
-                            setCustomMetadata("Latitude", "")
-                            setCustomMetadata("Longitude", "")
                             setCustomMetadata("time", time)
                             setCustomMetadata("user", FirebaseRepository.getUser()!!.email)
 
@@ -479,7 +478,7 @@ fun OverlayGraphics(color: Color){
         val canvasWidth = size.width
         val canvasHeight = size.height
 
-        drawRect( // TODO da posizionare megio
+        drawRect(
             color = color,
             topLeft = Offset(x = canvasWidth/6F, y = canvasHeight/5F),
             size = Size((canvasWidth*2f)/3f, (canvasHeight*3f)/5f),

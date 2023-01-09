@@ -170,7 +170,6 @@ fun LoginPage(navController: NavHostController) {
         val password = remember { mutableStateOf(TextFieldValue()) }
         var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
-        var errorStatus = ""
         val colorProperties = TextFieldDefaults.outlinedTextFieldColors(
             textColor =  LocalContentColor.current.copy(LocalContentAlpha.current),
             backgroundColor = MaterialTheme.colors.onSurface.copy(alpha = TextFieldDefaults.BackgroundOpacity),

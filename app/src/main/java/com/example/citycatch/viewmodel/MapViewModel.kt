@@ -77,7 +77,6 @@ class MapViewModel: ViewModel() {
 
         //Log.i("TAG", "New Position")
 
-        // TODO handle emptylist() from async call
         viewModelScope.launch {
             val reply = async { PlaceRepository.read() }
             _landmarks.value = reply.await()
