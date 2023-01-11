@@ -6,3 +6,7 @@ Our project features a map on the user's device that highlights points of intere
 Users will be able to see all the photos taken in their user page and they will be able to see their global ranking in the Leaderboard page.
 
 ## Architecture:
+![Architecture](https://drive.google.com/uc?export=view&id=1AY1mxLoRaeOaQI7LRFXX23dr3Bqf_Gdp)
+
+## Navigation
+![Navigation](https://drive.google.com/uc?export=view&id=1D9Y9EKte6p8CBgW9x-rimJD84UhPboww)
