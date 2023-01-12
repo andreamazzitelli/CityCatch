@@ -106,8 +106,8 @@ fun Leaderboard(vm: FirebaseViewModel) {
             LaunchedEffect(
                 key1 = gotUser.value,
                 block = {
-                    Log.i("TAG SCROLL", "Scrolled")
-                    Log.i("TAG SCROLL", "$user")
+                    //Log.i("TAG SCROLL", "Scrolled")
+                    //Log.i("TAG SCROLL", "$user")
                     listState.animateScrollToItem(index = user)
                 }
             )
