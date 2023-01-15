@@ -3,6 +3,7 @@ package com.example.citycatch.ui.composables
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
@@ -189,13 +190,14 @@ fun TopButton(){
 fun ImageBlock(vm: FirebaseViewModel){
 
     val urlList = vm.photoList.observeAsState()
+    Log.i("TAG IMAGE", urlList.value!!.isEmpty().toString())
 
     if(urlList.value!!.isNotEmpty()) {
         LazyColumn(
             modifier = Modifier.wrapContentSize()
         ) {
             itemsIndexed(urlList.value!!){ _, el ->
-                //Log.i("TAG IDEX", el)
+                Log.i("TAG INDEX", el)
                 RowElement(link = el)
             }
         }

@@ -34,20 +34,26 @@ class SensorViewModel: ViewModel(), SensorEventListener2 {
     private var rotationMatrix = FloatArray(9)
     private var angles = FloatArray(3)
 
-    private var bearing = 0.0f
-    private var roll = 0.0f
-    private var a = 0.0f
-
     private var markerLocation = Location("")
     private var userLocation = Location("")
 
+    private var bearing = userLocation.bearingTo(markerLocation)//0.0f
+    private var roll = 0.0f
+    private var a = 0.0f
+
+    private fun updateBearing(){
+        bearing = userLocation.bearingTo(markerLocation)
+    }
+
     fun setUserLocation(loc: Location){
        userLocation = loc
+        updateBearing()
         //Log.i("TAG SVM LOC", userLocation.toString())
     }
     fun setMarkerLocation(lat: Double, lon: Double){
         markerLocation.latitude = lat
         markerLocation.longitude = lon
+        updateBearing()
     }
 
     fun setSensorManager(sm: SensorManager){

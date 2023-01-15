@@ -104,6 +104,7 @@ class FirebaseViewModel : ViewModel() {
                 _photoNumber.value = list.items.size - 1
 
                 list.items.forEach {
+                    Log.i("TAG IMAGE", it.toString())
                     if (!it.toString().contains("profile.jpg")) {
                         val ref =
                             FirebaseRepository.getStorage().getReferenceFromUrl(it.toString())
@@ -113,10 +114,13 @@ class FirebaseViewModel : ViewModel() {
                                 _photoList.value!!.add(uri.toString())
                                 //Log.i("TAG URI", uri.toString())
                             }
-                        }
+                        }.addOnFailureListener {
+                                Log.i("TAG IMAGE", it.message.toString())
+                            }
                     }
                 }
             }
+
     }
 
     @SuppressLint("RestrictedApi")

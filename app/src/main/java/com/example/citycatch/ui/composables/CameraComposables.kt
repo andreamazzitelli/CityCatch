@@ -58,6 +58,7 @@ import com.example.citycatch.viewmodel.FirebaseViewModel
 import com.example.citycatch.viewmodel.MapViewModel
 import com.google.firebase.storage.ktx.storageMetadata
 import java.io.ByteArrayOutputStream
+import java.net.URLEncoder
 
 
 @SuppressLint("UnsafeOptInUsageError", "RestrictedApi")
@@ -384,8 +385,10 @@ fun PopUp(
                     colors = ButtonDefaults.buttonColors(Green),
                     onClick = {
 
+                        Log.i("TAG", URLEncoder.encode(markerName))
+
                         val time = System.currentTimeMillis().toString()
-                        val imagesRef = FirebaseRepository.getStorageReference().child("${FirebaseRepository.getUserUID()}/$time-$markerName.jpg")
+                        val imagesRef = FirebaseRepository.getStorageReference().child("${FirebaseRepository.getUserUID()}/$time-${markerName.replace(" ", "")}.jpg")
 
                         val stream = ByteArrayOutputStream()
                         image.compress(Bitmap.CompressFormat.JPEG, 100, stream)
@@ -522,7 +525,9 @@ fun ErrorCameraPopUp(){
                 )
                 Spacer(modifier = Modifier.height(30.dp))
                 Image(
-                    modifier= Modifier.fillMaxWidth().size(1000.dp, 100.dp),
+                    modifier= Modifier
+                        .fillMaxWidth()
+                        .size(1000.dp, 100.dp),
                     painter = painterResource(id = R.drawable.camera),
                     contentDescription = ""
                 )
