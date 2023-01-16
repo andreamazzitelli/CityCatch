@@ -1,6 +1,7 @@
 package com.example.citycatch.ui.composables
 
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -60,7 +61,7 @@ fun Leaderboard(vm: FirebaseViewModel) {
             )
 
 
-            
+
             Text(
                 text = "LEADERBOARD",
                 modifier = Modifier.padding(top = 20.dp),
@@ -89,9 +90,8 @@ fun Leaderboard(vm: FirebaseViewModel) {
                 content = {
 
                     itemsIndexed(userScores.value!!) { i, el ->
-                        //Log.i("TAG COL", "Here")
-
-                        if (el.mail == FirebaseRepository.getUser()!!.email) {
+                        //Log.i("TAG COL", i.toString())
+                       if (el.mail == FirebaseRepository.getUser()!!.email) {
                             user = i
                             gotUser.value = true
                         }else{
@@ -99,13 +99,14 @@ fun Leaderboard(vm: FirebaseViewModel) {
                         }
                         LeaderboardEntry(i, el, maxWidth, gotUser.value)
                     }
+
+                    //Log.i("TAG SCROLL AFTER", "$user")
                 }
             )
 
             LaunchedEffect(
                 key1 = gotUser.value,
                 block = {
-                    //Log.i("TAG SCROLL", "Scrolled")
                     //Log.i("TAG SCROLL", "$user")
                     listState.animateScrollToItem(index = user)
                 }

@@ -62,7 +62,7 @@ class CameraActivity : ComponentActivity() {
         val lon = intent.getDoubleExtra("marker_lon", 0.0)
         markerName = intent.getStringExtra("marker_name")
 
-        Log.i("TAG INTENT", "$lat $lon")
+        //Log.i("TAG INTENT", "$lat $lon")
 
         val sm = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         svm.setSensorManager(sm)

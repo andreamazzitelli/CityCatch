@@ -385,7 +385,6 @@ fun PopUp(
                     colors = ButtonDefaults.buttonColors(Green),
                     onClick = {
 
-                        Log.i("TAG", URLEncoder.encode(markerName))
 
                         val time = System.currentTimeMillis().toString()
                         val imagesRef = FirebaseRepository.getStorageReference().child("${FirebaseRepository.getUserUID()}/$time-${markerName.replace(" ", "")}.jpg")

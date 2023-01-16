@@ -190,7 +190,7 @@ fun TopButton(){
 fun ImageBlock(vm: FirebaseViewModel){
 
     val urlList = vm.photoList.observeAsState()
-    Log.i("TAG IMAGE", urlList.value!!.isEmpty().toString())
+    //Log.i("TAG IMAGE", urlList.value!!.isEmpty().toString())
 
     if(urlList.value!!.isNotEmpty()) {
         LazyColumn(
